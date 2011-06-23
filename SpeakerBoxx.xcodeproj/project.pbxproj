@@ -284,7 +284,6 @@
 		D866373B13B2A5240062869D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				GCC_ENABLE_OBJC_GC = supported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SpeakerBoxx/SpeakerBoxx-Prefix.pch";
 				INFOPLIST_FILE = "SpeakerBoxx/SpeakerBoxx-Info.plist";
@@ -297,7 +296,6 @@
 		D866373C13B2A5240062869D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				GCC_ENABLE_OBJC_GC = supported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SpeakerBoxx/SpeakerBoxx-Prefix.pch";
 				INFOPLIST_FILE = "SpeakerBoxx/SpeakerBoxx-Info.plist";
