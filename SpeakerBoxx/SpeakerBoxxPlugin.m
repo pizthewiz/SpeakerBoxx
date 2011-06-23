@@ -7,6 +7,7 @@
 //
 
 #import "SpeakerBoxxPlugIn.h"
+#import "SpeakerBoxx.h"
 
 #define	kQCPlugIn_Name				@"Audio Player"
 #define	kQCPlugIn_Description		@"SpeakerBoxx description"
@@ -78,7 +79,7 @@
 
 - (BOOL)execute:(id <QCPlugInContext>)context atTime:(NSTimeInterval)time withArguments:(NSDictionary*)arguments {
     // process input only when the file location changes
-    if (![self didValueForInputKeyChange:@"inputImageLocation"])
+    if (![self didValueForInputKeyChange:@"inputFileLocation"])
         return YES;
 
     // bail on empty location
@@ -92,6 +93,8 @@
     // TODO - may be better to just let it fail later?
 //    if (![url checkResourceIsReachableAndReturnError:NULL])
 //        return YES;
+
+    CCDebugLogSelector();
 
     self.fileURL = url;
 
