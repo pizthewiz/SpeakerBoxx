@@ -9,11 +9,71 @@
 #import "SpeakerBoxxPlugIn.h"
 #import "SpeakerBoxx.h"
 
-#define	kQCPlugIn_Name				@"Audio Player"
-#define	kQCPlugIn_Description		@"SpeakerBoxx description"
+#pragma mark AUDIOQUEUE
+
+static void DeriveBufferSize(AudioStreamBasicDescription ASBDesc, UInt32 maxPacketSize, Float64 seconds, UInt32* outBufferSize, UInt32* outNumPacketsToRead) {
+    static const int maxBufferSize = 0x50000;
+    static const int minBufferSize = 0x4000;
+
+    if (ASBDesc.mFramesPerPacket != 0) {
+        Float64 numPacketsForTime = ASBDesc.mSampleRate / ASBDesc.mFramesPerPacket * seconds;
+        *outBufferSize = numPacketsForTime * maxPacketSize;
+    } else {
+        *outBufferSize = maxBufferSize > maxPacketSize ? maxBufferSize : maxPacketSize;
+    }
+
+    if (*outBufferSize > maxBufferSize && *outBufferSize > maxPacketSize) {
+        *outBufferSize = maxBufferSize;
+    } else if (*outBufferSize < minBufferSize) {
+        *outBufferSize = minBufferSize;
+    }
+
+    *outNumPacketsToRead = *outBufferSize / maxPacketSize;
+}
+
+
+static void HandleOutputBuffer(void* aqData, AudioQueueRef inAQ, AudioQueueBufferRef inBuffer) {
+    struct AQPlayerState* pAqData = aqData;
+    if (!pAqData->mIsRunning) {
+        return;
+    }
+
+    UInt32 numBytesReadFromFile = 0, numPackets = pAqData->mNumPacketsToRead;
+    OSStatus status = AudioFileReadPackets(pAqData->mAudioFile, false, &numBytesReadFromFile, pAqData->mPacketDescs, pAqData->mCurrentPacket, &numPackets, inBuffer->mAudioData);
+    if (status != noErr) {
+        CCErrorLog(@"ERROR - failed to read packets from audio file");
+        return;
+    }
+
+    // stop when at the end
+    if (numPackets == 0) {
+        AudioQueueStop (pAqData->mQueue, false);
+        pAqData->mIsRunning = false;
+        return;
+    }
+
+    // enqueue data
+    inBuffer->mAudioDataByteSize = numBytesReadFromFile;
+    status = AudioQueueEnqueueBuffer(pAqData->mQueue, inBuffer, (pAqData->mPacketDescs ? numPackets : 0), pAqData->mPacketDescs);
+    if (status != noErr) {
+        CCErrorLog(@"ERROR - failed to enqueue buffer");
+        return;
+    }
+
+}
+
+#pragma mark - PLUGIN
+
+static NSString* const SBExampleCompositionName = @"";
+
+struct AQPlayerState aqData;
 
 @interface SpeakerBoxxPlugIn()
 @property (nonatomic, retain) NSURL* fileURL;
+- (void)_setupQueue;
+- (void)_startQueue;
+- (void)_stopQueue;
+- (void)_cleanupQueue;
 @end
 
 @implementation SpeakerBoxxPlugIn
@@ -43,7 +103,7 @@
     return (NSDictionary*)attributes;
 }
 
-+ (NSDictionary *)attributesForPropertyPortWithKey:(NSString*)key {
++ (NSDictionary*)attributesForPropertyPortWithKey:(NSString*)key {
     if ([key isEqualToString:@"inputFileLocation"])
         return [NSDictionary dictionaryWithObjectsAndKeys:@"File Location", QCPortAttributeNameKey, nil];
 	return nil;
@@ -66,13 +126,10 @@
 	return self;
 }
 
-- (void)finalize {
-    [_fileURL release];
-
-	[super finalize];
-}
-
 - (void)dealloc {
+    if (_aqData.mPacketDescs)
+        free(_aqData.mPacketDescs);
+
     [_fileURL release];
 
 	[super dealloc];
@@ -115,6 +172,7 @@
     CCDebugLogSelector();
 
     self.fileURL = url;
+    [self _setupQueue];
 
 	return YES;
 }
@@ -129,6 +187,104 @@
 	/*
 	Called by Quartz Composer when rendering of the composition stops: perform any required cleanup for the plug-in.
 	*/
+}
+
+#pragma mark -
+
+- (void)_setupQueue {
+    [self _cleanupQueue];
+
+    // open file
+    OSStatus status = AudioFileOpenURL((CFURLRef)self.fileURL, fsRdPerm, 0, &_aqData.mAudioFile);
+    if (status != noErr) {
+        CCErrorLog(@"ERROR - failed to open audio file %@", self.fileURL);
+    }
+
+    // fetch data format
+    UInt32 dataFormatSize = sizeof(_aqData.mDataFormat);
+    status = AudioFileGetProperty(_aqData.mAudioFile, kAudioFilePropertyDataFormat, &dataFormatSize, &_aqData.mDataFormat);
+    if (status != noErr) {
+        CCErrorLog(@"ERROR - failed to get data format property on audio file %@", self.fileURL);
+    }
+
+    // create queue
+    status = AudioQueueNewOutput(&_aqData.mDataFormat, HandleOutputBuffer, &_aqData, CFRunLoopGetCurrent(), kCFRunLoopCommonModes, 0, &_aqData.mQueue);
+    if (status != noErr) {
+        CCErrorLog(@"ERROR - failed to create audio queue for audio file %@", self.fileURL);
+    }
+
+    // sort out buffer needs
+    UInt32 maxPacketSize = 0, propertySize = sizeof(maxPacketSize);
+    status = AudioFileGetProperty(_aqData.mAudioFile, kAudioFilePropertyPacketSizeUpperBound, &propertySize, &maxPacketSize);
+    if (status != noErr) {
+        CCErrorLog(@"ERROR - failed to get packet upper bound size for audio file %@", self.fileURL);
+    }
+    DeriveBufferSize(_aqData.mDataFormat, maxPacketSize, 0.5, &_aqData.bufferByteSize, &_aqData.mNumPacketsToRead);
+
+    BOOL isFormatVBR = _aqData.mDataFormat.mBytesPerPacket == 0 || _aqData.mDataFormat.mFramesPerPacket == 0;
+    if (isFormatVBR) {
+        _aqData.mPacketDescs = (AudioStreamPacketDescription*)malloc(_aqData.mNumPacketsToRead * sizeof(AudioStreamPacketDescription));
+    } else {
+        _aqData.mPacketDescs = NULL;
+    }
+
+    // smash and grab magic cookie for formats that support it
+    UInt32 cookieSize = sizeof(UInt32);
+    status = AudioFileGetPropertyInfo(_aqData.mAudioFile, kAudioFilePropertyMagicCookieData, &cookieSize, NULL);
+    if (status == noErr && cookieSize) {
+        char* magicCookie = (char *) malloc(cookieSize);
+        AudioFileGetProperty(_aqData.mAudioFile, kAudioFilePropertyMagicCookieData, &cookieSize, magicCookie);
+        AudioQueueSetProperty(_aqData.mQueue, kAudioQueueProperty_MagicCookie, magicCookie, cookieSize);        
+        free (magicCookie);
+    }
+
+    // allocate and prime buffers
+    _aqData.mCurrentPacket = 0;
+    for (NSUInteger idx = 0; idx < kNumberBuffers; ++idx) {
+        status = AudioQueueAllocateBuffer(_aqData.mQueue, _aqData.bufferByteSize, &_aqData.mBuffers[idx]);
+        if (status != noErr) {
+            CCErrorLog(@"ERROR - failed to allocate queue buffer");
+        }
+        HandleOutputBuffer(&_aqData, _aqData.mQueue, _aqData.mBuffers[idx]);
+    }
+
+    // set gain
+    Float32 gain = 1.0;
+    // Optionally, allow user to override gain setting here
+    status = AudioQueueSetParameter(_aqData.mQueue, kAudioQueueParam_Volume, gain);
+    if (status != noErr) {
+        CCErrorLog(@"ERROR - failed to set queue gain to %f", gain);
+    }
+
+    // kickstart playback
+    [self _startQueue];
+}
+
+- (void)_startQueue {
+    _aqData.mIsRunning = true;
+    OSStatus status = AudioQueueStart(_aqData.mQueue, NULL);
+    if (status != noErr) {
+        CCErrorLog(@"ERROR - failed to start queue");
+    }
+    do {
+        CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.25, false);
+    } while (_aqData.mIsRunning);
+    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 1, false);    
+}
+
+- (void)_stopQueue {
+    AudioQueueStop(_aqData.mQueue, false);
+    _aqData.mIsRunning = false;
+}
+
+- (void)_cleanupQueue {
+    if (_aqData.mIsRunning) {
+        [self _stopQueue];
+    }
+
+    AudioQueueDispose(_aqData.mQueue, true);
+    AudioFileClose(aqData.mAudioFile);
+    free (aqData.mPacketDescs);
 }
 
 @end
