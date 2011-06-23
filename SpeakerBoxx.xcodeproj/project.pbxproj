@@ -1,0 +1,310 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D866372813B2A5240062869D /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D866372713B2A5240062869D /* Quartz.framework */; };
+		D866373413B2A5240062869D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D866373213B2A5240062869D /* InfoPlist.strings */; };
+		D866373713B2A5240062869D /* SpeakerBoxxPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = D866373613B2A5240062869D /* SpeakerBoxxPlugin.m */; };
+		D866374213B2B87B0062869D /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D866372A13B2A5240062869D /* AppKit.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		D866372213B2A5240062869D /* SpeakerBoxx.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SpeakerBoxx.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		D866372513B2A5240062869D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		D866372713B2A5240062869D /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
+		D866372A13B2A5240062869D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		D866372C13B2A5240062869D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		D866373113B2A5240062869D /* SpeakerBoxx-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SpeakerBoxx-Info.plist"; sourceTree = "<group>"; };
+		D866373313B2A5240062869D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		D866373513B2A5240062869D /* SpeakerBoxxPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpeakerBoxxPlugin.h; sourceTree = "<group>"; };
+		D866373613B2A5240062869D /* SpeakerBoxxPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SpeakerBoxxPlugin.m; sourceTree = "<group>"; };
+		D866374113B2B7500062869D /* SpeakerBoxx-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SpeakerBoxx-Prefix.pch"; sourceTree = "<group>"; };
+		D866374413B2BAAF0062869D /* Rakefile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Rakefile; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D866371E13B2A5240062869D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D866374213B2B87B0062869D /* AppKit.framework in Frameworks */,
+				D866372813B2A5240062869D /* Quartz.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D866371613B2A5240062869D = {
+			isa = PBXGroup;
+			children = (
+				D866372F13B2A5240062869D /* SpeakerBoxx */,
+				D866372413B2A5240062869D /* Frameworks */,
+				D866372313B2A5240062869D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D866372313B2A5240062869D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D866372213B2A5240062869D /* SpeakerBoxx.plugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D866372413B2A5240062869D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D866372513B2A5240062869D /* Cocoa.framework */,
+				D866372713B2A5240062869D /* Quartz.framework */,
+				D866372913B2A5240062869D /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D866372913B2A5240062869D /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D866372A13B2A5240062869D /* AppKit.framework */,
+				D866372C13B2A5240062869D /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		D866372F13B2A5240062869D /* SpeakerBoxx */ = {
+			isa = PBXGroup;
+			children = (
+				D866373513B2A5240062869D /* SpeakerBoxxPlugin.h */,
+				D866373613B2A5240062869D /* SpeakerBoxxPlugin.m */,
+				D866373013B2A5240062869D /* Supporting Files */,
+				D866374413B2BAAF0062869D /* Rakefile */,
+			);
+			path = SpeakerBoxx;
+			sourceTree = "<group>";
+		};
+		D866373013B2A5240062869D /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				D866373113B2A5240062869D /* SpeakerBoxx-Info.plist */,
+				D866374113B2B7500062869D /* SpeakerBoxx-Prefix.pch */,
+				D866373213B2A5240062869D /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D866372113B2A5240062869D /* SpeakerBoxx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D866373A13B2A5240062869D /* Build configuration list for PBXNativeTarget "SpeakerBoxx" */;
+			buildPhases = (
+				D866371D13B2A5240062869D /* Sources */,
+				D866371E13B2A5240062869D /* Frameworks */,
+				D866371F13B2A5240062869D /* Resources */,
+				D866374313B2B9590062869D /* Update Info.plist With git Info */,
+				D866372013B2A5240062869D /* Copy Plug-In Into Place */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SpeakerBoxx;
+			productName = SpeakerBoxx;
+			productReference = D866372213B2A5240062869D /* SpeakerBoxx.plugin */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D866371813B2A5240062869D /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = D866371B13B2A5240062869D /* Build configuration list for PBXProject "SpeakerBoxx" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = D866371613B2A5240062869D;
+			productRefGroup = D866372313B2A5240062869D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D866372113B2A5240062869D /* SpeakerBoxx */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D866371F13B2A5240062869D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D866373413B2A5240062869D /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D866372013B2A5240062869D /* Copy Plug-In Into Place */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Plug-In Into Place";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This shell script simply copies the built plug-in to \"~/Library/Graphics/Quartz Composer Plug-Ins\" and overrides any previous version at that location\n\nmkdir -p \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins\"\nrm -rf \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins/SpeakerBoxx.plugin\"\nditto \"$BUILT_PRODUCTS_DIR/SpeakerBoxx.plugin\" \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins/SpeakerBoxx.plugin\"\n";
+		};
+		D866374313B2B9590062869D /* Update Info.plist With git Info */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Update Info.plist With git Info";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/bin/rake update_bundle_version\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D866371D13B2A5240062869D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D866373713B2A5240062869D /* SpeakerBoxxPlugin.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		D866373213B2A5240062869D /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D866373313B2A5240062869D /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		D866373813B2A5240062869D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					DEBUG,
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				SDKROOT = macosx;
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = Debug;
+		};
+		D866373913B2A5240062869D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				RUN_CLANG_STATIC_ANALYZER = YES;
+				SDKROOT = macosx;
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = Release;
+		};
+		D866373B13B2A5240062869D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SpeakerBoxx/SpeakerBoxx-Prefix.pch";
+				INFOPLIST_FILE = "SpeakerBoxx/SpeakerBoxx-Info.plist";
+				INSTALL_PATH = "$(HOME)/Library/Graphics/Quartz Composer Plug-Ins";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = Debug;
+		};
+		D866373C13B2A5240062869D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "SpeakerBoxx/SpeakerBoxx-Prefix.pch";
+				INFOPLIST_FILE = "SpeakerBoxx/SpeakerBoxx-Info.plist";
+				INSTALL_PATH = "$(HOME)/Library/Graphics/Quartz Composer Plug-Ins";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D866371B13B2A5240062869D /* Build configuration list for PBXProject "SpeakerBoxx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D866373813B2A5240062869D /* Debug */,
+				D866373913B2A5240062869D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D866373A13B2A5240062869D /* Build configuration list for PBXNativeTarget "SpeakerBoxx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D866373B13B2A5240062869D /* Debug */,
+				D866373C13B2A5240062869D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D866371813B2A5240062869D /* Project object */;
+}
