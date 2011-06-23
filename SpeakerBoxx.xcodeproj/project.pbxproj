@@ -12,6 +12,7 @@
 		D866373713B2A5240062869D /* SpeakerBoxxPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = D866373613B2A5240062869D /* SpeakerBoxxPlugin.m */; };
 		D866374213B2B87B0062869D /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D866372A13B2A5240062869D /* AppKit.framework */; };
 		D866375313B30A860062869D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D866375113B30A860062869D /* AudioToolbox.framework */; };
+		D866375713B31A990062869D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D866375513B31A980062869D /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		D866374713B2C09B0062869D /* TODO */ = {isa = PBXFileReference; lastKnownFileType = text; path = TODO; sourceTree = SOURCE_ROOT; };
 		D866374C13B2CA0E0062869D /* SpeakerBoxx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpeakerBoxx.h; sourceTree = "<group>"; };
 		D866375113B30A860062869D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		D866375613B31A990062869D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 				D866373113B2A5240062869D /* SpeakerBoxx-Info.plist */,
 				D866374113B2B7500062869D /* SpeakerBoxx-Prefix.pch */,
 				D866373213B2A5240062869D /* InfoPlist.strings */,
+				D866375513B31A980062869D /* Localizable.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -159,6 +162,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D866373413B2A5240062869D /* InfoPlist.strings in Resources */,
+				D866375713B31A990062869D /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,6 +217,14 @@
 				D866373313B2A5240062869D /* en */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		D866375513B31A980062869D /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D866375613B31A990062869D /* en */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

@@ -1,0 +1,10 @@
+/* 
+  Localizable.strings
+  SpeakerBoxx
+
+  Created by Jean-Pierre Mouilleseaux on 6/22/11.
+  Copyright 2011 __MyCompanyName__. All rights reserved.
+*/
+
+"kQCPlugIn_Name" = "Audio Player";
+"kQCPlugIn_Description" = "SpeakerBoxx description";

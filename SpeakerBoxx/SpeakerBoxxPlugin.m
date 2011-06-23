@@ -22,7 +22,25 @@
 @synthesize fileURL = _fileURL;
 
 + (NSDictionary*)attributes {
-	return [NSDictionary dictionaryWithObjectsAndKeys:kQCPlugIn_Name, QCPlugInAttributeNameKey, kQCPlugIn_Description, QCPlugInAttributeDescriptionKey, nil];
+    NSMutableDictionary* attributes = [NSDictionary dictionaryWithObjectsAndKeys: 
+        CCLocalizedString(@"kQCPlugIn_Name", NULL), QCPlugInAttributeNameKey, 
+        CCLocalizedString(@"kQCPlugIn_Description", NULL), QCPlugInAttributeDescriptionKey, 
+        nil];
+
+#if defined(MAC_OS_X_VERSION_10_7) && (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_7)
+    if (&QCPlugInAttributeCategoriesKey != NULL) {
+        // array with category strings
+        NSArray* categories = [NSArray arrayWithObjects:@"obviously", @"fake", nil];
+        [attributes setObject:categories forKey:QCPlugInAttributeCategoriesKey];
+    }
+    if (&QCPlugInAttributeExamplesKey != NULL) {
+        // array of file paths or urls relative to plugin resources
+        NSArray* examples = [NSArray arrayWithObjects:[[NSBundle mainBundle] URLForResource:SBExampleCompositionName withExtension:@"qtz"], nil];
+        [attributes setObject:examples forKey:QCPlugInAttributeExamplesKey];
+    }
+#endif
+
+    return (NSDictionary*)attributes;
 }
 
 + (NSDictionary *)attributesForPropertyPortWithKey:(NSString*)key {
