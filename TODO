@@ -1,0 +1,7 @@
+NOW
+[ ] AudioQueue playback for core formats
+
+LATER
+[ ] tone generator subpatch
+[ ] audio file subpatch
+[ ] transcode from unsupported formats to AAC/CAF/Lossless
