@@ -25,6 +25,9 @@
 		D866373613B2A5240062869D /* SpeakerBoxxPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SpeakerBoxxPlugin.m; sourceTree = "<group>"; };
 		D866374113B2B7500062869D /* SpeakerBoxx-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SpeakerBoxx-Prefix.pch"; sourceTree = "<group>"; };
 		D866374413B2BAAF0062869D /* Rakefile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Rakefile; sourceTree = SOURCE_ROOT; };
+		D866374513B2C09B0062869D /* CHANGELOG */ = {isa = PBXFileReference; lastKnownFileType = text; path = CHANGELOG; sourceTree = SOURCE_ROOT; };
+		D866374613B2C09B0062869D /* README.markdown */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.markdown; sourceTree = SOURCE_ROOT; };
+		D866374713B2C09B0062869D /* TODO */ = {isa = PBXFileReference; lastKnownFileType = text; path = TODO; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,7 +85,10 @@
 				D866373513B2A5240062869D /* SpeakerBoxxPlugin.h */,
 				D866373613B2A5240062869D /* SpeakerBoxxPlugin.m */,
 				D866373013B2A5240062869D /* Supporting Files */,
+				D866374613B2C09B0062869D /* README.markdown */,
 				D866374413B2BAAF0062869D /* Rakefile */,
+				D866374713B2C09B0062869D /* TODO */,
+				D866374513B2C09B0062869D /* CHANGELOG */,
 			);
 			path = SpeakerBoxx;
 			sourceTree = "<group>";
