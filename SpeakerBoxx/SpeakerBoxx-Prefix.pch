@@ -2,6 +2,5 @@
 // Prefix header for all source files of the 'SpeakerBoxx' target in the 'SpeakerBoxx' project
 //
 
-#ifdef __OBJC__
-    #import <Quartz/Quartz.h>
-#endif
+#import <Quartz/Quartz.h>
+#import <AudioToolbox/AudioToolbox.h>
