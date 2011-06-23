@@ -11,6 +11,7 @@
 		D866373413B2A5240062869D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D866373213B2A5240062869D /* InfoPlist.strings */; };
 		D866373713B2A5240062869D /* SpeakerBoxxPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = D866373613B2A5240062869D /* SpeakerBoxxPlugin.m */; };
 		D866374213B2B87B0062869D /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D866372A13B2A5240062869D /* AppKit.framework */; };
+		D866375313B30A860062869D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D866375113B30A860062869D /* AudioToolbox.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 		D866374613B2C09B0062869D /* README.markdown */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.markdown; sourceTree = SOURCE_ROOT; };
 		D866374713B2C09B0062869D /* TODO */ = {isa = PBXFileReference; lastKnownFileType = text; path = TODO; sourceTree = SOURCE_ROOT; };
 		D866374C13B2CA0E0062869D /* SpeakerBoxx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpeakerBoxx.h; sourceTree = "<group>"; };
+		D866375113B30A860062869D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,6 +40,7 @@
 			files = (
 				D866374213B2B87B0062869D /* AppKit.framework in Frameworks */,
 				D866372813B2A5240062869D /* Quartz.framework in Frameworks */,
+				D866375313B30A860062869D /* AudioToolbox.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,6 +69,7 @@
 			children = (
 				D866372513B2A5240062869D /* Cocoa.framework */,
 				D866372713B2A5240062869D /* Quartz.framework */,
+				D866375113B30A860062869D /* AudioToolbox.framework */,
 				D866372913B2A5240062869D /* Other Frameworks */,
 			);
 			name = Frameworks;
