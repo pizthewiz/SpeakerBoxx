@@ -8,5 +8,9 @@
 
 #import <Quartz/Quartz.h>
 
-@interface SpeakerBoxxPlugIn : QCPlugIn
+@interface SpeakerBoxxPlugIn : QCPlugIn {
+@private
+    NSURL* _fileURL;
+}
+@property (nonatomic, assign) NSString* inputFileLocation;
 @end

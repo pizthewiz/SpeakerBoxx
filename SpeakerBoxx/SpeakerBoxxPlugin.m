@@ -11,43 +11,31 @@
 #define	kQCPlugIn_Name				@"Audio Player"
 #define	kQCPlugIn_Description		@"SpeakerBoxx description"
 
+@interface SpeakerBoxxPlugIn()
+@property (nonatomic, retain) NSURL* fileURL;
+@end
+
 @implementation SpeakerBoxxPlugIn
 
-/*
-Here you need to declare the input / output properties as dynamic as Quartz Composer will handle their implementation
-@dynamic inputFoo, outputBar;
-*/
+@dynamic inputFileLocation;
+@synthesize fileURL = _fileURL;
 
 + (NSDictionary*)attributes {
-	/*
-	Return a dictionary of attributes describing the plug-in (QCPlugInAttributeNameKey, QCPlugInAttributeDescriptionKey...).
-	*/
-
 	return [NSDictionary dictionaryWithObjectsAndKeys:kQCPlugIn_Name, QCPlugInAttributeNameKey, kQCPlugIn_Description, QCPlugInAttributeDescriptionKey, nil];
 }
 
 + (NSDictionary *)attributesForPropertyPortWithKey:(NSString*)key {
-	/*
-	Specify the optional attributes for property based ports (QCPortAttributeNameKey, QCPortAttributeDefaultValueKey...).
-	*/
-	
+    if ([key isEqualToString:@"inputFileLocation"])
+        return [NSDictionary dictionaryWithObjectsAndKeys:@"File Location", QCPortAttributeNameKey, nil];
 	return nil;
 }
 
 + (QCPlugInExecutionMode)executionMode {
-	/*
-	Return the execution mode of the plug-in: kQCPlugInExecutionModeProvider, kQCPlugInExecutionModeProcessor, or kQCPlugInExecutionModeConsumer.
-	*/
-
-	return kQCPlugInExecutionModeProcessor;
+	return kQCPlugInExecutionModeConsumer;
 }
 
 + (QCPlugInTimeMode)timeMode {
-	/*
-	Return the time dependency mode of the plug-in: kQCPlugInTimeModeNone, kQCPlugInTimeModeIdle or kQCPlugInTimeModeTimeBase.
-	*/
-
-	return kQCPlugInTimeModeNone;
+	return kQCPlugInTimeModeIdle;
 }
 
 #pragma mark -
@@ -60,14 +48,14 @@ Here you need to declare the input / output properties as dynamic as Quartz Comp
 }
 
 - (void)finalize {
-	/*
-	Release any non garbage collected resources created in -init.
-	*/
+    [_fileURL release];
 
 	[super finalize];
 }
 
 - (void)dealloc {
+    [_fileURL release];
+
 	[super dealloc];
 }
 
@@ -89,14 +77,23 @@ Here you need to declare the input / output properties as dynamic as Quartz Comp
 }
 
 - (BOOL)execute:(id <QCPlugInContext>)context atTime:(NSTimeInterval)time withArguments:(NSDictionary*)arguments {
-	/*
-	Called by Quartz Composer whenever the plug-in instance needs to execute.
-	Only read from the plug-in inputs and produce a result (by writing to the plug-in outputs or rendering to the destination OpenGL context) within that method and nowhere else.
-	Return NO in case of failure during the execution (this will prevent rendering of the current frame to complete).
-	
-	The OpenGL context for rendering can be accessed and defined for CGL macros using:
-	CGLContextObj cgl_ctx = [context CGLContextObj];
-	*/
+    // process input only when the file location changes
+    if (![self didValueForInputKeyChange:@"inputImageLocation"])
+        return YES;
+
+    // bail on empty location
+    if ([self.inputFileLocation isEqualToString:@""])
+        return YES;
+
+    NSURL* url = [NSURL URLWithString:self.inputFileLocation];
+    if (![url isFileURL])
+        url = [NSURL fileURLWithPath:[self.inputFileLocation stringByExpandingTildeInPath] isDirectory:NO];
+
+    // TODO - may be better to just let it fail later?
+//    if (![url checkResourceIsReachableAndReturnError:NULL])
+//        return YES;
+
+    self.fileURL = url;
 
 	return YES;
 }
