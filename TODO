@@ -1,7 +1,8 @@
 NOW
-[ ] AudioQueue playback for core formats
+[X] AudioQueue playback for core formats
+[ ] get audio playback off the main thread!
 
 LATER
+[ ] expose gain input?
 [ ] tone generator subpatch
 [ ] audio file subpatch
-[ ] transcode from unsupported formats to AAC/CAF/Lossless
