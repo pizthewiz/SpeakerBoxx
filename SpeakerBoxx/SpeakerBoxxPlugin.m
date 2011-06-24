@@ -12,6 +12,8 @@
 #pragma mark AUDIOQUEUE
 
 static void DeriveBufferSize(AudioStreamBasicDescription ASBDesc, UInt32 maxPacketSize, Float64 seconds, UInt32* outBufferSize, UInt32* outNumPacketsToRead) {
+    CCDebugLog(@"DeriveBufferSize()");
+
     static const int maxBufferSize = 0x50000;
     static const int minBufferSize = 0x4000;
 
@@ -33,6 +35,8 @@ static void DeriveBufferSize(AudioStreamBasicDescription ASBDesc, UInt32 maxPack
 
 
 static void HandleOutputBuffer(void* aqData, AudioQueueRef inAQ, AudioQueueBufferRef inBuffer) {
+    CCDebugLog(@"HandleOutputBuffer()");
+
     struct AQPlayerState* pAqData = aqData;
     if (!pAqData->mIsRunning) {
         return;
@@ -162,8 +166,15 @@ struct AQPlayerState aqData;
         return YES;
 
     NSURL* url = [NSURL URLWithString:self.inputFileLocation];
-    if (![url isFileURL])
-        url = [NSURL fileURLWithPath:[self.inputFileLocation stringByExpandingTildeInPath] isDirectory:NO];
+    if (![url isFileURL]) {
+        NSString* path = [self.inputFileLocation stringByStandardizingPath];
+        if ([path isAbsolutePath]) {
+            url = [NSURL fileURLWithPath:path isDirectory:NO];
+        } else {
+            NSURL* baseDirectoryURL = [[context compositionURL] URLByDeletingLastPathComponent];
+            url = [baseDirectoryURL URLByAppendingPathComponent:path];
+        }        
+    }
 
     // TODO - may be better to just let it fail later?
 //    if (![url checkResourceIsReachableAndReturnError:NULL])
@@ -192,12 +203,15 @@ struct AQPlayerState aqData;
 #pragma mark -
 
 - (void)_setupQueue {
+    CCDebugLogSelector();
+
     [self _cleanupQueue];
 
     // open file
     OSStatus status = AudioFileOpenURL((CFURLRef)self.fileURL, fsRdPerm, 0, &_aqData.mAudioFile);
     if (status != noErr) {
         CCErrorLog(@"ERROR - failed to open audio file %@", self.fileURL);
+        return;
     }
 
     // fetch data format
@@ -261,6 +275,8 @@ struct AQPlayerState aqData;
 }
 
 - (void)_startQueue {
+    CCDebugLogSelector();
+
     _aqData.mIsRunning = true;
     OSStatus status = AudioQueueStart(_aqData.mQueue, NULL);
     if (status != noErr) {
@@ -273,11 +289,15 @@ struct AQPlayerState aqData;
 }
 
 - (void)_stopQueue {
+    CCDebugLogSelector();
+
     AudioQueueStop(_aqData.mQueue, false);
     _aqData.mIsRunning = false;
 }
 
 - (void)_cleanupQueue {
+    CCDebugLogSelector();
+
     if (_aqData.mIsRunning) {
         [self _stopQueue];
     }
