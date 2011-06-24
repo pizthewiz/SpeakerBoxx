@@ -21,6 +21,7 @@ struct AQPlayerState {
     UInt32 mNumPacketsToRead;
     AudioStreamPacketDescription* mPacketDescs;
     bool mIsRunning;
+    bool mShouldPrimeBuffers;
 };
 
 @interface SpeakerBoxxPlugIn : QCPlugIn {

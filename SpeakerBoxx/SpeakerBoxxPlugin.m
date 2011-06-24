@@ -38,7 +38,7 @@ static void HandleOutputBuffer(void* aqData, AudioQueueRef inAQ, AudioQueueBuffe
     CCDebugLog(@"HandleOutputBuffer()");
 
     struct AQPlayerState* pAqData = aqData;
-    if (!pAqData->mIsRunning) {
+    if (!pAqData->mIsRunning && !pAqData->mShouldPrimeBuffers) {
         return;
     }
 
@@ -49,21 +49,22 @@ static void HandleOutputBuffer(void* aqData, AudioQueueRef inAQ, AudioQueueBuffe
         return;
     }
 
+    // enqueue the next chunk
+    if (numPackets > 0) {
+        inBuffer->mAudioDataByteSize = numBytesReadFromFile;
+        status = AudioQueueEnqueueBuffer(pAqData->mQueue, inBuffer, (pAqData->mPacketDescs ? numPackets : 0), pAqData->mPacketDescs);
+        if (status != noErr) {
+            CCErrorLog(@"ERROR - failed to enqueue buffer");
+            return;
+        }
+        pAqData->mCurrentPacket += numPackets;
+    }
     // stop when at the end
-    if (numPackets == 0) {
-        AudioQueueStop (pAqData->mQueue, false);
+    else {
+        AudioQueueStop(pAqData->mQueue, false);
         pAqData->mIsRunning = false;
         return;
     }
-
-    // enqueue data
-    inBuffer->mAudioDataByteSize = numBytesReadFromFile;
-    status = AudioQueueEnqueueBuffer(pAqData->mQueue, inBuffer, (pAqData->mPacketDescs ? numPackets : 0), pAqData->mPacketDescs);
-    if (status != noErr) {
-        CCErrorLog(@"ERROR - failed to enqueue buffer");
-        return;
-    }
-
 }
 
 #pragma mark - PLUGIN
@@ -173,7 +174,7 @@ struct AQPlayerState aqData;
         } else {
             NSURL* baseDirectoryURL = [[context compositionURL] URLByDeletingLastPathComponent];
             url = [baseDirectoryURL URLByAppendingPathComponent:path];
-        }        
+        }
     }
 
     // TODO - may be better to just let it fail later?
@@ -259,7 +260,9 @@ struct AQPlayerState aqData;
         if (status != noErr) {
             CCErrorLog(@"ERROR - failed to allocate queue buffer");
         }
+        _aqData.mShouldPrimeBuffers = true;
         HandleOutputBuffer(&_aqData, _aqData.mQueue, _aqData.mBuffers[idx]);
+        _aqData.mShouldPrimeBuffers = false;
     }
 
     // set gain
@@ -277,6 +280,11 @@ struct AQPlayerState aqData;
 - (void)_startQueue {
     CCDebugLogSelector();
 
+    if (_aqData.mIsRunning) {
+        CCWarningLog(@"WARNING - queue already running, cannot run while runnning");
+        return;
+    }
+
     _aqData.mIsRunning = true;
     OSStatus status = AudioQueueStart(_aqData.mQueue, NULL);
     if (status != noErr) {
@@ -291,6 +299,11 @@ struct AQPlayerState aqData;
 - (void)_stopQueue {
     CCDebugLogSelector();
 
+    if (!_aqData.mIsRunning) {
+        CCWarningLog(@"WARNING - queue not running, stop is unnecessary");
+        return;
+    }
+
     AudioQueueStop(_aqData.mQueue, false);
     _aqData.mIsRunning = false;
 }
@@ -303,8 +316,11 @@ struct AQPlayerState aqData;
     }
 
     AudioQueueDispose(_aqData.mQueue, true);
+    _aqData.mQueue = NULL;
     AudioFileClose(aqData.mAudioFile);
-    free (aqData.mPacketDescs);
+    aqData.mAudioFile = NULL;
+    free(aqData.mPacketDescs);
+    aqData.mPacketDescs = NULL;
 }
 
 @end
