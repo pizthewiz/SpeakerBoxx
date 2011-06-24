@@ -33,6 +33,7 @@
 		D866374C13B2CA0E0062869D /* SpeakerBoxx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpeakerBoxx.h; sourceTree = "<group>"; };
 		D866375113B30A860062869D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		D866375613B31A990062869D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		D866376713B42EC10062869D /* Audio Player.qtz */ = {isa = PBXFileReference; lastKnownFileType = "video.quartz-composer"; path = "Audio Player.qtz"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +98,7 @@
 				D866374413B2BAAF0062869D /* Rakefile */,
 				D866374713B2C09B0062869D /* TODO */,
 				D866374513B2C09B0062869D /* CHANGELOG */,
+				D866376713B42EC10062869D /* Audio Player.qtz */,
 			);
 			path = SpeakerBoxx;
 			sourceTree = "<group>";
