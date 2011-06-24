@@ -28,6 +28,8 @@ struct AQPlayerState {
 @private
     struct AQPlayerState _aqData;
     NSURL* _fileURL;
+    BOOL _playSignal;
 }
 @property (nonatomic, assign) NSString* inputFileLocation;
+@property (nonatomic) BOOL inputPlaySignal;
 @end

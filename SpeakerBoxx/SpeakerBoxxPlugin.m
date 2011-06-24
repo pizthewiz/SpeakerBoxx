@@ -83,7 +83,7 @@ struct AQPlayerState aqData;
 
 @implementation SpeakerBoxxPlugIn
 
-@dynamic inputFileLocation;
+@dynamic inputFileLocation, inputPlaySignal;
 @synthesize fileURL = _fileURL;
 
 + (NSDictionary*)attributes {
@@ -111,6 +111,8 @@ struct AQPlayerState aqData;
 + (NSDictionary*)attributesForPropertyPortWithKey:(NSString*)key {
     if ([key isEqualToString:@"inputFileLocation"])
         return [NSDictionary dictionaryWithObjectsAndKeys:@"File Location", QCPortAttributeNameKey, nil];
+    if ([key isEqualToString:@"inputPlaySignal"])
+        return [NSDictionary dictionaryWithObjectsAndKeys:@"Play Signal", QCPortAttributeNameKey, nil];
 	return nil;
 }
 
@@ -146,36 +148,49 @@ struct AQPlayerState aqData;
 	/*
 	Called by Quartz Composer when the plug-in instance starts being used by Quartz Composer.
 	*/
+
+    if (_playSignal && _aqData.mQueue)
+        [self _startQueue];
 }
 
 - (BOOL)execute:(id <QCPlugInContext>)context atTime:(NSTimeInterval)time withArguments:(NSDictionary*)arguments {
-    // process input only when the file location changes
-    if (![self didValueForInputKeyChange:@"inputFileLocation"])
+    // quick bail
+    if (!([self didValueForInputKeyChange:@"inputFileLocation"] || [self didValueForInputKeyChange:@"inputPlaySignal"]) || [self.inputFileLocation isEqualToString:@""])
         return YES;
 
-    // bail on empty location
-    if ([self.inputFileLocation isEqualToString:@""])
-        return YES;
+    if ([self didValueForInputKeyChange:@"inputFileLocation"]) {
+        [self _cleanupQueue];
 
-    NSURL* url = [NSURL URLWithString:self.inputFileLocation];
-    if (![url isFileURL]) {
-        NSString* path = [self.inputFileLocation stringByStandardizingPath];
-        if ([path isAbsolutePath]) {
-            url = [NSURL fileURLWithPath:path isDirectory:NO];
-        } else {
-            NSURL* baseDirectoryURL = [[context compositionURL] URLByDeletingLastPathComponent];
-            url = [baseDirectoryURL URLByAppendingPathComponent:path];
+        NSURL* url = [NSURL URLWithString:self.inputFileLocation];
+        if (![url isFileURL]) {
+            NSString* path = [self.inputFileLocation stringByStandardizingPath];
+            if ([path isAbsolutePath]) {
+                url = [NSURL fileURLWithPath:path isDirectory:NO];
+            } else {
+                NSURL* baseDirectoryURL = [[context compositionURL] URLByDeletingLastPathComponent];
+                url = [baseDirectoryURL URLByAppendingPathComponent:path];
+            }
         }
+
+        // TODO - may be better to just let it fail later?
+        if (![url checkResourceIsReachableAndReturnError:NULL])
+            return YES;
+
+        self.fileURL = url;
+
+        [self _setupQueue];
+
+        if (self.inputPlaySignal)
+            [self _startQueue];
+    }
+    if ([self didValueForInputKeyChange:@"inputPlaySignal"]) {
+        if (self.inputPlaySignal)
+            [self _startQueue];
+        else
+            [self _stopQueue];
     }
 
-    // TODO - may be better to just let it fail later?
-    if (![url checkResourceIsReachableAndReturnError:NULL])
-        return YES;
-
     CCDebugLogSelector();
-
-    self.fileURL = url;
-    [self _setupQueue];
 
 	return YES;
 }
@@ -187,7 +202,9 @@ struct AQPlayerState aqData;
 
     CCDebugLogSelector();
 
-    [self _stopQueue];
+//    if (_playSignal && _aqData.mQueue)
+    if (_aqData.mIsRunning)
+        [self _stopQueue];
 }
 
 - (void)stopExecution:(id <QCPlugInContext>)context {
@@ -267,9 +284,6 @@ struct AQPlayerState aqData;
     if (status != noErr) {
         CCErrorLog(@"ERROR - failed to set queue gain to %f", gain);
     }
-
-    // kickstart playback
-    [self _startQueue];
 }
 
 - (void)_startQueue {
@@ -300,7 +314,7 @@ struct AQPlayerState aqData;
         return;
     }
 
-    AudioQueueStop(_aqData.mQueue, false);
+    AudioQueueStop(_aqData.mQueue, true);
     _aqData.mIsRunning = false;
 }
 
