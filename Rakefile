@@ -9,7 +9,7 @@ BUNDLE_VERSION_STRING_KEY = 'CFBundleShortVersionString'
 HEAD_REVISION_KEY = 'com.chordedconstructions.ProjectHEADRevision'
 
 ARCHIVE_NAME = 'SpeakerBoxx'
-ARCHIVE_INCLUDE_FILES = %w(README.markdown TODO CHANGELOG)
+ARCHIVE_INCLUDE_FILES = %w(README.markdown TODO CHANGELOG Audio\ Player.qtz beat.wav)
 ARCHIVE_EXCLUDE_FILES = %w()
 
 # helpers

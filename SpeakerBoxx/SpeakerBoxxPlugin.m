@@ -69,7 +69,7 @@ static void HandleOutputBuffer(void* aqData, AudioQueueRef inAQ, AudioQueueBuffe
 
 #pragma mark - PLUGIN
 
-static NSString* const SBExampleCompositionName = @"";
+static NSString* const SBExampleCompositionName = @"Audio Player";
 
 struct AQPlayerState aqData;
 
