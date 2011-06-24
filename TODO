@@ -1,6 +1,6 @@
 NOW
 [X] AudioQueue playback for core formats
-[ ] get audio playback off the main thread!
+[X] get audio playback off the main thread!
 
 LATER
 [ ] expose gain input?

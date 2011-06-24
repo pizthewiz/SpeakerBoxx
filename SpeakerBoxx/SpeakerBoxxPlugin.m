@@ -193,6 +193,10 @@ struct AQPlayerState aqData;
 	/*
 	Called by Quartz Composer when the plug-in instance stops being used by Quartz Composer.
 	*/
+
+    CCDebugLogSelector();
+
+    [self _stopQueue];
 }
 
 - (void)stopExecution:(id <QCPlugInContext>)context {
@@ -290,10 +294,11 @@ struct AQPlayerState aqData;
     if (status != noErr) {
         CCErrorLog(@"ERROR - failed to start queue");
     }
-    do {
-        CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.25, false);
-    } while (_aqData.mIsRunning);
-    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 1, false);    
+    // NB - this pretty much spams the main thread and blocks it while playback is occuring
+//    do {
+//        CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.25, false);
+//    } while (_aqData.mIsRunning);
+//    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 1, false);
 }
 
 - (void)_stopQueue {
