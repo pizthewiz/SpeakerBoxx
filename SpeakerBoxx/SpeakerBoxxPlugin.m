@@ -124,17 +124,8 @@ struct AQPlayerState aqData;
 
 #pragma mark -
 
-- (id)init {
-	self = [super init];
-	if (self) {
-	}	
-	return self;
-}
-
 - (void)dealloc {
-    if (_aqData.mPacketDescs)
-        free(_aqData.mPacketDescs);
-
+    [self _cleanupQueue];
     [_fileURL release];
 
 	[super dealloc];
@@ -178,8 +169,8 @@ struct AQPlayerState aqData;
     }
 
     // TODO - may be better to just let it fail later?
-//    if (![url checkResourceIsReachableAndReturnError:NULL])
-//        return YES;
+    if (![url checkResourceIsReachableAndReturnError:NULL])
+        return YES;
 
     CCDebugLogSelector();
 
