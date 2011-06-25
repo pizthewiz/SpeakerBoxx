@@ -78,6 +78,7 @@ struct AQPlayerState aqData;
 - (void)_setupQueue;
 - (void)_startQueue;
 - (void)_stopQueue;
+- (void)_pauseQueue;
 - (void)_cleanupQueue;
 @end
 
@@ -187,7 +188,7 @@ struct AQPlayerState aqData;
         if (self.inputPlaySignal)
             [self _startQueue];
         else
-            [self _stopQueue];
+            [self _pauseQueue];
     }
 
     CCDebugLogSelector();
@@ -202,9 +203,8 @@ struct AQPlayerState aqData;
 
     CCDebugLogSelector();
 
-//    if (_playSignal && _aqData.mQueue)
     if (_aqData.mIsRunning)
-        [self _stopQueue];
+        [self _cleanupQueue];
 }
 
 - (void)stopExecution:(id <QCPlugInContext>)context {
@@ -261,7 +261,7 @@ struct AQPlayerState aqData;
     if (status == noErr && cookieSize) {
         char* magicCookie = (char *) malloc(cookieSize);
         AudioFileGetProperty(_aqData.mAudioFile, kAudioFilePropertyMagicCookieData, &cookieSize, magicCookie);
-        AudioQueueSetProperty(_aqData.mQueue, kAudioQueueProperty_MagicCookie, magicCookie, cookieSize);        
+        AudioQueueSetProperty(_aqData.mQueue, kAudioQueueProperty_MagicCookie, magicCookie, cookieSize);
         free (magicCookie);
     }
 
@@ -299,11 +299,22 @@ struct AQPlayerState aqData;
     if (status != noErr) {
         CCErrorLog(@"ERROR - failed to start queue");
     }
-    // NB - this pretty much spams the main thread and blocks it while playback is occuring
-//    do {
-//        CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.25, false);
-//    } while (_aqData.mIsRunning);
-//    CFRunLoopRunInMode(kCFRunLoopDefaultMode, 1, false);
+}
+
+- (void)_pauseQueue {
+    CCDebugLogSelector();
+
+    if (!_aqData.mIsRunning) {
+        CCWarningLog(@"WARNING - queue not running, pause is unnecessary");
+        return;
+    }
+
+    OSStatus status = AudioQueuePause(_aqData.mQueue);
+    if (status != noErr) {
+        CCErrorLog(@"ERROR - failed to pause queue");
+    }
+    // TODO - cannot express play state
+    _aqData.mIsRunning = false;
 }
 
 - (void)_stopQueue {
@@ -314,7 +325,11 @@ struct AQPlayerState aqData;
         return;
     }
 
-    AudioQueueStop(_aqData.mQueue, true);
+    OSStatus status = AudioQueueStop(_aqData.mQueue, true);
+    if (status != noErr) {
+        CCErrorLog(@"ERROR - failed to stop queue");
+        return;
+    }
     _aqData.mIsRunning = false;
 }
 
