@@ -5,4 +5,5 @@ NOW
 LATER
 [ ] expose gain input?
 [ ] tone generator subpatch
-[ ] audio file subpatch
+[ ] audio file subpatch to output struct of time, ID3
+[ ] consider changing patch to kQCPlugInExecutionModeProcessor to output current time
