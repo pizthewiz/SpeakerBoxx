@@ -45,7 +45,7 @@ static void HandleOutputBuffer(void* aqData, AudioQueueRef inAQ, AudioQueueBuffe
     UInt32 numBytesReadFromFile = 0, numPackets = pAqData->mNumPacketsToRead;
     OSStatus status = AudioFileReadPackets(pAqData->mAudioFile, false, &numBytesReadFromFile, pAqData->mPacketDescs, pAqData->mCurrentPacket, &numPackets, inBuffer->mAudioData);
     if (status != noErr) {
-        CCErrorLog(@"ERROR - failed to read packets from audio file with error %d", status);
+        CCErrorLog(@"ERROR - failed to read packets from audio file with error %d", (int)status);
         return;
     }
 
@@ -54,7 +54,7 @@ static void HandleOutputBuffer(void* aqData, AudioQueueRef inAQ, AudioQueueBuffe
         inBuffer->mAudioDataByteSize = numBytesReadFromFile;
         status = AudioQueueEnqueueBuffer(pAqData->mQueue, inBuffer, (pAqData->mPacketDescs ? numPackets : 0), pAqData->mPacketDescs);
         if (status != noErr) {
-            CCErrorLog(@"ERROR - failed to enqueue buffer with error %d", status);
+            CCErrorLog(@"ERROR - failed to enqueue buffer with error %d", (int)status);
             return;
         }
         pAqData->mCurrentPacket += numPackets;
@@ -223,7 +223,7 @@ struct AQPlayerState aqData;
     // open file
     OSStatus status = AudioFileOpenURL((CFURLRef)self.fileURL, fsRdPerm, 0, &_aqData.mAudioFile);
     if (status != noErr) {
-        CCErrorLog(@"ERROR - failed to open audio file %@ with error %d", self.fileURL, status);
+        CCErrorLog(@"ERROR - failed to open audio file %@ with error %d", self.fileURL, (int)status);
         return;
     }
 
@@ -231,20 +231,20 @@ struct AQPlayerState aqData;
     UInt32 dataFormatSize = sizeof(_aqData.mDataFormat);
     status = AudioFileGetProperty(_aqData.mAudioFile, kAudioFilePropertyDataFormat, &dataFormatSize, &_aqData.mDataFormat);
     if (status != noErr) {
-        CCErrorLog(@"ERROR - failed to get data format property on audio file %@ with error %d", self.fileURL, status);
+        CCErrorLog(@"ERROR - failed to get data format property on audio file %@ with error %d", self.fileURL, (int)status);
     }
 
     // create queue
     status = AudioQueueNewOutput(&_aqData.mDataFormat, HandleOutputBuffer, &_aqData, CFRunLoopGetCurrent(), kCFRunLoopCommonModes, 0, &_aqData.mQueue);
     if (status != noErr) {
-        CCErrorLog(@"ERROR - failed to create audio queue for audio file %@ with error %d", self.fileURL, status);
+        CCErrorLog(@"ERROR - failed to create audio queue for audio file %@ with error %d", self.fileURL, (int)status);
     }
 
     // sort out buffer needs
     UInt32 maxPacketSize = 0, propertySize = sizeof(maxPacketSize);
     status = AudioFileGetProperty(_aqData.mAudioFile, kAudioFilePropertyPacketSizeUpperBound, &propertySize, &maxPacketSize);
     if (status != noErr) {
-        CCErrorLog(@"ERROR - failed to get packet upper bound size for audio file %@ with error %d", self.fileURL, status);
+        CCErrorLog(@"ERROR - failed to get packet upper bound size for audio file %@ with error %d", self.fileURL, (int)status);
     }
     DeriveBufferSize(_aqData.mDataFormat, maxPacketSize, 0.5, &_aqData.bufferByteSize, &_aqData.mNumPacketsToRead);
 
@@ -270,7 +270,7 @@ struct AQPlayerState aqData;
     for (NSUInteger idx = 0; idx < kNumberBuffers; ++idx) {
         status = AudioQueueAllocateBuffer(_aqData.mQueue, _aqData.bufferByteSize, &_aqData.mBuffers[idx]);
         if (status != noErr) {
-            CCErrorLog(@"ERROR - failed to allocate queue buffer with error %d", status);
+            CCErrorLog(@"ERROR - failed to allocate queue buffer with error %d", (int)status);
         }
         _aqData.mShouldPrimeBuffers = true;
         HandleOutputBuffer(&_aqData, _aqData.mQueue, _aqData.mBuffers[idx]);
@@ -282,7 +282,7 @@ struct AQPlayerState aqData;
     // Optionally, allow user to override gain setting here
     status = AudioQueueSetParameter(_aqData.mQueue, kAudioQueueParam_Volume, gain);
     if (status != noErr) {
-        CCErrorLog(@"ERROR - failed to set queue gain to %f with error %d", gain, status);
+        CCErrorLog(@"ERROR - failed to set queue gain to %f with error %d", gain, (int)status);
     }
 }
 
@@ -297,7 +297,7 @@ struct AQPlayerState aqData;
     _aqData.mIsRunning = true;
     OSStatus status = AudioQueueStart(_aqData.mQueue, NULL);
     if (status != noErr) {
-        CCErrorLog(@"ERROR - failed to start queue with error %d", status);
+        CCErrorLog(@"ERROR - failed to start queue with error %d", (int)status);
     }
 }
 
@@ -311,7 +311,7 @@ struct AQPlayerState aqData;
 
     OSStatus status = AudioQueuePause(_aqData.mQueue);
     if (status != noErr) {
-        CCErrorLog(@"ERROR - failed to pause queue with error %d", status);
+        CCErrorLog(@"ERROR - failed to pause queue with error %d", (int)status);
     }
     // TODO - cannot express play state
     _aqData.mIsRunning = false;
@@ -327,7 +327,7 @@ struct AQPlayerState aqData;
 
     OSStatus status = AudioQueueStop(_aqData.mQueue, true);
     if (status != noErr) {
-        CCErrorLog(@"ERROR - failed to stop queue with error %d", status);
+        CCErrorLog(@"ERROR - failed to stop queue with error %d", (int)status);
         return;
     }
     _aqData.mIsRunning = false;
