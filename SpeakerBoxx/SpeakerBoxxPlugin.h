@@ -9,6 +9,12 @@
 #import <Quartz/Quartz.h>
 #import <AudioToolbox/AudioQueue.h>
 
+typedef enum {
+    SBPlaybackStateStopped = 0,
+    SBPlaybackStatePlaying = 1 << 1,
+    SBPlaybackStatePaused = 1 << 2
+} SBPlaybackState;
+
 // yoinked from http://developer.apple.com/library/mac/#documentation/MusicAudio/Conceptual/AudioQueueProgrammingGuide/AQPlayback/PlayingAudio.html
 static const int kNumberBuffers = 3;
 struct AQPlayerState {
@@ -20,7 +26,7 @@ struct AQPlayerState {
     SInt64 mCurrentPacket;
     UInt32 mNumPacketsToRead;
     AudioStreamPacketDescription* mPacketDescs;
-    bool mIsRunning;
+    SBPlaybackState mPlaybackState;
     bool mShouldPrimeBuffers;
 };
 

@@ -38,7 +38,7 @@ static void HandleOutputBuffer(void* aqData, AudioQueueRef inAQ, AudioQueueBuffe
     CCDebugLog(@"HandleOutputBuffer()");
 
     struct AQPlayerState* pAqData = aqData;
-    if (!pAqData->mIsRunning && !pAqData->mShouldPrimeBuffers) {
+    if (pAqData->mPlaybackState == SBPlaybackStateStopped && !pAqData->mShouldPrimeBuffers) {
         return;
     }
 
@@ -62,7 +62,7 @@ static void HandleOutputBuffer(void* aqData, AudioQueueRef inAQ, AudioQueueBuffe
     // stop when at the end
     else {
         AudioQueueStop(pAqData->mQueue, false);
-        pAqData->mIsRunning = false;
+        pAqData->mPlaybackState = SBPlaybackStateStopped;
         return;
     }
 }
@@ -203,7 +203,7 @@ struct AQPlayerState aqData;
 
     CCDebugLogSelector();
 
-    if (_aqData.mIsRunning)
+    if (_aqData.mPlaybackState != SBPlaybackStateStopped)
         [self _cleanupQueue];
 }
 
@@ -289,12 +289,12 @@ struct AQPlayerState aqData;
 - (void)_startQueue {
     CCDebugLogSelector();
 
-    if (_aqData.mIsRunning) {
+    if (_aqData.mPlaybackState == SBPlaybackStatePlaying) {
         CCWarningLog(@"WARNING - queue already running, cannot run while runnning");
         return;
     }
 
-    _aqData.mIsRunning = true;
+    _aqData.mPlaybackState = SBPlaybackStatePlaying;
     OSStatus status = AudioQueueStart(_aqData.mQueue, NULL);
     if (status != noErr) {
         CCErrorLog(@"ERROR - failed to start queue with error %d", (int)status);
@@ -304,7 +304,7 @@ struct AQPlayerState aqData;
 - (void)_pauseQueue {
     CCDebugLogSelector();
 
-    if (!_aqData.mIsRunning) {
+    if (_aqData.mPlaybackState != SBPlaybackStatePlaying) {
         CCWarningLog(@"WARNING - queue not running, pause is unnecessary");
         return;
     }
@@ -313,14 +313,13 @@ struct AQPlayerState aqData;
     if (status != noErr) {
         CCErrorLog(@"ERROR - failed to pause queue with error %d", (int)status);
     }
-    // TODO - cannot express play state
-    _aqData.mIsRunning = false;
+    _aqData.mPlaybackState = SBPlaybackStatePaused;
 }
 
 - (void)_stopQueue {
     CCDebugLogSelector();
 
-    if (!_aqData.mIsRunning) {
+    if (_aqData.mPlaybackState != SBPlaybackStatePlaying) {
         CCWarningLog(@"WARNING - queue not running, stop is unnecessary");
         return;
     }
@@ -330,13 +329,13 @@ struct AQPlayerState aqData;
         CCErrorLog(@"ERROR - failed to stop queue with error %d", (int)status);
         return;
     }
-    _aqData.mIsRunning = false;
+    _aqData.mPlaybackState = SBPlaybackStateStopped;
 }
 
 - (void)_cleanupQueue {
     CCDebugLogSelector();
 
-    if (_aqData.mIsRunning) {
+    if (_aqData.mPlaybackState != SBPlaybackStateStopped) {
         [self _stopQueue];
     }
 
