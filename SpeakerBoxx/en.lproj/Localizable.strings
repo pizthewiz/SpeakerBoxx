@@ -7,4 +7,4 @@
 */
 
 "kQCPlugIn_Name" = "Audio Player";
-"kQCPlugIn_Description" = "SpeakerBoxx description";
+"kQCPlugIn_Description" = "This patch allows playback of a given audio file from a URL or file path.\n\nWhen the Play Signal goes HIGH with a valid File Location, playback will begin.";
