@@ -79,6 +79,7 @@ struct AQPlayerState aqData;
 - (void)_startQueue;
 - (void)_stopQueue;
 - (void)_pauseQueue;
+- (void)_resetQueue;
 - (void)_cleanupQueue;
 @end
 
@@ -199,7 +200,8 @@ struct AQPlayerState aqData;
         [self _pauseQueue];
     }
     if ([self didValueForInputKeyChange:@"inputStopSignal"] && self.inputStopSignal) {
-        [self _cleanupQueue];
+        [self _stopQueue];
+        [self _resetQueue];
     }
 
     CCDebugLogSelector();
@@ -346,6 +348,26 @@ struct AQPlayerState aqData;
         return;
     }
     _aqData.mPlaybackState = SBPlaybackStateStopped;
+}
+
+- (void)_resetQueue {
+    CCDebugLogSelector();
+
+    if (!_aqData.mQueue) {
+        CCErrorLog(@"ERROR - failed to reset queue, queue not setup!");
+        return;
+    }
+
+    if (_aqData.mPlaybackState != SBPlaybackStateStopped) {
+        [self _stopQueue];
+    }
+
+    _aqData.mCurrentPacket = 0;
+    _aqData.mShouldPrimeBuffers = true;
+    for (NSUInteger idx = 0; idx < kNumberBuffers; ++idx) {
+        HandleOutputBuffer(&_aqData, _aqData.mQueue, _aqData.mBuffers[idx]);
+    }
+    _aqData.mShouldPrimeBuffers = false;
 }
 
 - (void)_cleanupQueue {
