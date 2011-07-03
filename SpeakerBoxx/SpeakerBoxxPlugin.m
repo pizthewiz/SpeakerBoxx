@@ -79,7 +79,7 @@ struct AQPlayerState aqData;
 - (void)_startQueue;
 - (void)_stopQueue;
 - (void)_pauseQueue;
-- (void)_resetQueue;
+- (void)_resetQueueToPacket:(NSUInteger)packet;
 - (void)_cleanupQueue;
 @end
 
@@ -201,7 +201,7 @@ struct AQPlayerState aqData;
     }
     if ([self didValueForInputKeyChange:@"inputStopSignal"] && self.inputStopSignal) {
         [self _stopQueue];
-        [self _resetQueue];
+        [self _resetQueueToPacket:0];
     }
 
     CCDebugLogSelector();
@@ -350,7 +350,7 @@ struct AQPlayerState aqData;
     _aqData.mPlaybackState = SBPlaybackStateStopped;
 }
 
-- (void)_resetQueue {
+- (void)_resetQueueToPacket:(NSUInteger)packet {
     CCDebugLogSelector();
 
     if (!_aqData.mQueue) {
@@ -362,7 +362,7 @@ struct AQPlayerState aqData;
         [self _stopQueue];
     }
 
-    _aqData.mCurrentPacket = 0;
+    _aqData.mCurrentPacket = packet;
     _aqData.mShouldPrimeBuffers = true;
     for (NSUInteger idx = 0; idx < kNumberBuffers; ++idx) {
         HandleOutputBuffer(&_aqData, _aqData.mQueue, _aqData.mBuffers[idx]);
