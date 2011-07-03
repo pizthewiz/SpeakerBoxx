@@ -38,4 +38,6 @@ struct AQPlayerState {
 }
 @property (nonatomic, assign) NSString* inputFileLocation;
 @property (nonatomic) BOOL inputPlaySignal;
+@property (nonatomic) BOOL inputPauseSignal;
+@property (nonatomic) BOOL inputStopSignal;
 @end

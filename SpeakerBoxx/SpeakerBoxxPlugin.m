@@ -84,7 +84,7 @@ struct AQPlayerState aqData;
 
 @implementation SpeakerBoxxPlugIn
 
-@dynamic inputFileLocation, inputPlaySignal;
+@dynamic inputFileLocation, inputPlaySignal, inputPauseSignal, inputStopSignal;
 @synthesize fileURL = _fileURL;
 
 + (NSDictionary*)attributes {
@@ -112,8 +112,12 @@ struct AQPlayerState aqData;
 + (NSDictionary*)attributesForPropertyPortWithKey:(NSString*)key {
     if ([key isEqualToString:@"inputFileLocation"])
         return [NSDictionary dictionaryWithObjectsAndKeys:@"File Location", QCPortAttributeNameKey, nil];
-    if ([key isEqualToString:@"inputPlaySignal"])
+    else if ([key isEqualToString:@"inputPlaySignal"])
         return [NSDictionary dictionaryWithObjectsAndKeys:@"Play Signal", QCPortAttributeNameKey, nil];
+    else if ([key isEqualToString:@"inputPauseSignal"])
+        return [NSDictionary dictionaryWithObjectsAndKeys:@"Pause Signal", QCPortAttributeNameKey, nil];
+    else if ([key isEqualToString:@"inputStopSignal"])
+        return [NSDictionary dictionaryWithObjectsAndKeys:@"Stop Signal", QCPortAttributeNameKey, nil];
 	return nil;
 }
 
@@ -156,7 +160,7 @@ struct AQPlayerState aqData;
 
 - (BOOL)execute:(id <QCPlugInContext>)context atTime:(NSTimeInterval)time withArguments:(NSDictionary*)arguments {
     // quick bail
-    if (!([self didValueForInputKeyChange:@"inputFileLocation"] || [self didValueForInputKeyChange:@"inputPlaySignal"]) || [self.inputFileLocation isEqualToString:@""])
+    if (!([self didValueForInputKeyChange:@"inputFileLocation"] || [self didValueForInputKeyChange:@"inputPlaySignal"] || [self didValueForInputKeyChange:@"inputPauseSignal"] || [self didValueForInputKeyChange:@"inputStopSignal"]) || [self.inputFileLocation isEqualToString:@""])
         return YES;
 
     if ([self didValueForInputKeyChange:@"inputFileLocation"]) {
@@ -173,22 +177,29 @@ struct AQPlayerState aqData;
             }
         }
 
-        // TODO - may be better to just let it fail later?
-        if (![url checkResourceIsReachableAndReturnError:NULL])
-            return YES;
-
         self.fileURL = url;
+
+        // TODO - may be better to just let it fail later?
+        if (![url checkResourceIsReachableAndReturnError:NULL]) {
+            return YES;
+        }
 
         [self _setupQueue];
 
         if (self.inputPlaySignal)
             [self _startQueue];
     }
-    if ([self didValueForInputKeyChange:@"inputPlaySignal"]) {
-        if (self.inputPlaySignal)
-            [self _startQueue];
-        else
-            [self _pauseQueue];
+    if ([self didValueForInputKeyChange:@"inputPlaySignal"] && self.inputPlaySignal) {
+        // setup when necessary
+        if (!_aqData.mQueue)
+            [self _setupQueue];
+        [self _startQueue];
+    }
+    if ([self didValueForInputKeyChange:@"inputPauseSignal"] && self.inputPauseSignal) {
+        [self _pauseQueue];
+    }
+    if ([self didValueForInputKeyChange:@"inputStopSignal"] && self.inputStopSignal) {
+        [self _cleanupQueue];
     }
 
     CCDebugLogSelector();
@@ -288,6 +299,11 @@ struct AQPlayerState aqData;
 
 - (void)_startQueue {
     CCDebugLogSelector();
+
+    if (!_aqData.mQueue) {
+        CCErrorLog(@"ERROR - failed to start queue, queue not setup!");
+        return;
+    }
 
     if (_aqData.mPlaybackState == SBPlaybackStatePlaying) {
         CCWarningLog(@"WARNING - queue already running, cannot run while runnning");
