@@ -21,6 +21,7 @@ static void DeriveBufferSize(AudioStreamBasicDescription ASBDesc, UInt32 maxPack
         Float64 numPacketsForTime = ASBDesc.mSampleRate / ASBDesc.mFramesPerPacket * seconds;
         *outBufferSize = numPacketsForTime * maxPacketSize;
     } else {
+        // VBR
         *outBufferSize = maxBufferSize > maxPacketSize ? maxBufferSize : maxPacketSize;
     }
 
@@ -259,7 +260,8 @@ struct AQPlayerState aqData;
     if (status != noErr) {
         CCErrorLog(@"ERROR - failed to get packet upper bound size for audio file %@ with error %d", self.fileURL, (int)status);
     }
-    DeriveBufferSize(_aqData.mDataFormat, maxPacketSize, 0.5, &_aqData.bufferByteSize, &_aqData.mNumPacketsToRead);
+#define SBBufferDurationSeconds 0.5
+    DeriveBufferSize(_aqData.mDataFormat, maxPacketSize, SBBufferDurationSeconds, &_aqData.bufferByteSize, &_aqData.mNumPacketsToRead);
 
     BOOL isFormatVBR = _aqData.mDataFormat.mBytesPerPacket == 0 || _aqData.mDataFormat.mFramesPerPacket == 0;
     if (isFormatVBR) {
