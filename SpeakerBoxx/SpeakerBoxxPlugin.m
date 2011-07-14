@@ -72,6 +72,8 @@ static void HandleOutputBuffer(void* aqData, AudioQueueRef inAQ, AudioQueueBuffe
 
 static NSString* const SBExampleCompositionName = @"Audio Player";
 
+static double SBGainDefault = 1.0;
+
 struct AQPlayerState aqData;
 
 @interface SpeakerBoxxPlugIn()
@@ -82,11 +84,12 @@ struct AQPlayerState aqData;
 - (void)_pauseQueue;
 - (void)_resetQueueToPacket:(NSUInteger)packet;
 - (void)_cleanupQueue;
+- (void)_setQueueGain;
 @end
 
 @implementation SpeakerBoxxPlugIn
 
-@dynamic inputFileLocation, inputPlaySignal, inputPauseSignal, inputStopSignal;
+@dynamic inputFileLocation, inputPlaySignal, inputPauseSignal, inputStopSignal, inputGain;
 @synthesize fileURL = _fileURL;
 
 + (NSDictionary*)attributes {
@@ -120,6 +123,11 @@ struct AQPlayerState aqData;
         return [NSDictionary dictionaryWithObjectsAndKeys:@"Pause Signal", QCPortAttributeNameKey, nil];
     else if ([key isEqualToString:@"inputStopSignal"])
         return [NSDictionary dictionaryWithObjectsAndKeys:@"Stop Signal", QCPortAttributeNameKey, nil];
+    else if ([key isEqualToString:@"inputGain"])
+        return [NSDictionary dictionaryWithObjectsAndKeys:@"Gain", QCPortAttributeNameKey, 
+            [NSNumber numberWithDouble:0], QCPortAttributeMinimumValueKey, 
+            [NSNumber numberWithDouble:1.0], QCPortAttributeMaximumValueKey, 
+            [NSNumber numberWithDouble:SBGainDefault], QCPortAttributeDefaultValueKey, nil];
 	return nil;
 }
 
@@ -132,6 +140,14 @@ struct AQPlayerState aqData;
 }
 
 #pragma mark -
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        _gain = SBGainDefault;
+    }
+    return self;
+}
 
 - (void)dealloc {
     [self _cleanupQueue];
@@ -293,12 +309,7 @@ struct AQPlayerState aqData;
     }
 
     // set gain
-    Float32 gain = 1.0;
-    // Optionally, allow user to override gain setting here
-    status = AudioQueueSetParameter(_aqData.mQueue, kAudioQueueParam_Volume, gain);
-    if (status != noErr) {
-        CCErrorLog(@"ERROR - failed to set queue gain to %f with error %d", gain, (int)status);
-    }
+    [self _setQueueGain];
 }
 
 - (void)_startQueue {
@@ -385,6 +396,19 @@ struct AQPlayerState aqData;
     aqData.mAudioFile = NULL;
     free(aqData.mPacketDescs);
     aqData.mPacketDescs = NULL;
+}
+
+- (void)_setQueueGain {
+    if (!_aqData.mQueue) {
+        CCWarningLog(@"WARNING - failed to set queue gain, queue not setup!");
+        return;
+    }
+
+    Float32 gain = _gain;
+    OSStatus status = AudioQueueSetParameter(_aqData.mQueue, kAudioQueueParam_Volume, gain);
+    if (status != noErr) {
+        CCErrorLog(@"ERROR - failed to set queue gain to %f with error %d", gain, (int)status);
+    }
 }
 
 @end
