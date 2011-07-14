@@ -1,13 +1,14 @@
 NOW
 [X] AudioQueue playback for core formats
 [X] get audio playback off the main thread!
+[X] expose gain input
 
 LATER
-[ ] expose gain input?
+[ ] may need some locking around queue access?
 [ ] tone generator subpatch - sawtooth, triangle, pulse (square), noise + sine
     see http://en.wikipedia.org/wiki/Piano_key_frequencies
     see http://en.wikipedia.org/wiki/MOS_Technology_SID
     see http://my.safaribooksonline.com/book/audio/9780321636973/understanding-core-audio/part01#X2ludGVybmFsX0ZsYXNoUmVhZGVyP3htbGlkPTk3ODAzMjE2MzY5NzMvMw==
-[ ] audio file subpatch to output struct of time, ID3
+[ ] audio file subpatch to output struct of time, ID3?
 [/] consider changing patch to kQCPlugInExecutionModeProcessor to output current time
     doesn't make sense
