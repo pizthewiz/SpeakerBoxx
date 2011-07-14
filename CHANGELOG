@@ -1,2 +1,7 @@
+
+v0.1.1 (13 July 2011)
+* expose pause and stop signal inputs
+* expose gain input
+
 v0.1.0 (2 July 2011)
 * initial release
