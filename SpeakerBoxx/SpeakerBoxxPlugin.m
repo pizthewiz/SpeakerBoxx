@@ -178,7 +178,7 @@ struct AQPlayerState aqData;
 
 - (BOOL)execute:(id <QCPlugInContext>)context atTime:(NSTimeInterval)time withArguments:(NSDictionary*)arguments {
     // quick bail
-    if (!([self didValueForInputKeyChange:@"inputFileLocation"] || [self didValueForInputKeyChange:@"inputPlaySignal"] || [self didValueForInputKeyChange:@"inputPauseSignal"] || [self didValueForInputKeyChange:@"inputStopSignal"]) || [self.inputFileLocation isEqualToString:@""])
+    if (!([self didValueForInputKeyChange:@"inputFileLocation"] || [self didValueForInputKeyChange:@"inputPlaySignal"] || [self didValueForInputKeyChange:@"inputPauseSignal"] || [self didValueForInputKeyChange:@"inputStopSignal"] || [self didValueForInputKeyChange:@"inputGain"]) || [self.inputFileLocation isEqualToString:@""])
         return YES;
 
     if ([self didValueForInputKeyChange:@"inputFileLocation"]) {
@@ -219,6 +219,10 @@ struct AQPlayerState aqData;
     if ([self didValueForInputKeyChange:@"inputStopSignal"] && self.inputStopSignal) {
         [self _stopQueue];
         [self _resetQueueToPacket:0];
+    }
+    if ([self didValueForInputKeyChange:@"inputGain"]) {
+        _gain = self.inputGain;
+        [self _setQueueGain];
     }
 
     CCDebugLogSelector();
@@ -399,6 +403,8 @@ struct AQPlayerState aqData;
 }
 
 - (void)_setQueueGain {
+    CCDebugLogSelector();
+
     if (!_aqData.mQueue) {
         CCWarningLog(@"WARNING - failed to set queue gain, queue not setup!");
         return;
