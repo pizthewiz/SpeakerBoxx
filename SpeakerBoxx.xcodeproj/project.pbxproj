@@ -141,6 +141,9 @@
 /* Begin PBXProject section */
 		D866371813B2A5240062869D /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = D866371B13B2A5240062869D /* Build configuration list for PBXProject "SpeakerBoxx" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;

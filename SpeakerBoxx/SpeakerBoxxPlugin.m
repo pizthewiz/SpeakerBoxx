@@ -93,7 +93,7 @@ struct AQPlayerState aqData;
 @synthesize fileURL = _fileURL;
 
 + (NSDictionary*)attributes {
-    NSMutableDictionary* attributes = [NSDictionary dictionaryWithObjectsAndKeys: 
+    NSMutableDictionary* attributes = [NSMutableDictionary dictionaryWithObjectsAndKeys: 
         CCLocalizedString(@"kQCPlugIn_Name", NULL), QCPlugInAttributeNameKey, 
         CCLocalizedString(@"kQCPlugIn_Description", NULL), QCPlugInAttributeDescriptionKey, 
         nil];
@@ -101,7 +101,7 @@ struct AQPlayerState aqData;
 #if defined(MAC_OS_X_VERSION_10_7) && (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_7)
     if (&QCPlugInAttributeCategoriesKey != NULL) {
         // array with category strings
-        NSArray* categories = [NSArray arrayWithObjects:@"obviously", @"fake", nil];
+        NSArray* categories = [NSArray arrayWithObjects:@"Render", nil];
         [attributes setObject:categories forKey:QCPlugInAttributeCategoriesKey];
     }
     if (&QCPlugInAttributeExamplesKey != NULL) {
