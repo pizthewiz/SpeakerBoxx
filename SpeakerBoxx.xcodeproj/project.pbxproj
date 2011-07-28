@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D864240C13E12C64002B9A65 /* Audio Player.qtz in Resources */ = {isa = PBXBuildFile; fileRef = D866376713B42EC10062869D /* Audio Player.qtz */; };
 		D866372813B2A5240062869D /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D866372713B2A5240062869D /* Quartz.framework */; };
 		D866373413B2A5240062869D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D866373213B2A5240062869D /* InfoPlist.strings */; };
 		D866373713B2A5240062869D /* SpeakerBoxxPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = D866373613B2A5240062869D /* SpeakerBoxxPlugin.m */; };
@@ -168,6 +169,7 @@
 			files = (
 				D866373413B2A5240062869D /* InfoPlist.strings in Resources */,
 				D866375713B31A990062869D /* Localizable.strings in Resources */,
+				D864240C13E12C64002B9A65 /* Audio Player.qtz in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,7 +202,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/bin/rake update_bundle_version\n";
+			shellScript = "/usr/local/bin/macrake update_bundle_version\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

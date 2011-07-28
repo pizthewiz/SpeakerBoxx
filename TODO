@@ -4,7 +4,7 @@ NOW
 [X] expose gain input
 
 LATER
-[ ] may need some locking around queue access?
+[ ] may need some locking around queue access? (use GCD)
 [ ] tone generator subpatch - sawtooth, triangle, pulse (square), noise + sine
     see http://en.wikipedia.org/wiki/Piano_key_frequencies
     see http://en.wikipedia.org/wiki/MOS_Technology_SID

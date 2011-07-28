@@ -106,7 +106,7 @@ struct AQPlayerState aqData;
     }
     if (&QCPlugInAttributeExamplesKey != NULL) {
         // array of file paths or urls relative to plugin resources
-        NSArray* examples = [NSArray arrayWithObjects:[[NSBundle mainBundle] URLForResource:SBExampleCompositionName withExtension:@"qtz"], nil];
+        NSArray* examples = [NSArray arrayWithObjects:[[NSBundle bundleForClass:[self class]] URLForResource:SBExampleCompositionName withExtension:@"qtz"], nil];
         [attributes setObject:examples forKey:QCPlugInAttributeExamplesKey];
     }
 #endif
