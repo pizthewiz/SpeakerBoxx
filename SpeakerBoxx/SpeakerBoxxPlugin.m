@@ -89,7 +89,7 @@ struct AQPlayerState aqData;
 
 @implementation SpeakerBoxxPlugIn
 
-@dynamic inputFileLocation, inputPlaySignal, inputPauseSignal, inputStopSignal, inputGain;
+@dynamic inputFileLocation, inputPlaySignal, inputPlayFromBeginningSignal, inputPauseSignal, inputStopSignal, inputGain;
 @synthesize fileURL = _fileURL;
 
 + (NSDictionary*)attributes {
@@ -119,6 +119,8 @@ struct AQPlayerState aqData;
         return [NSDictionary dictionaryWithObjectsAndKeys:@"File Location", QCPortAttributeNameKey, nil];
     else if ([key isEqualToString:@"inputPlaySignal"])
         return [NSDictionary dictionaryWithObjectsAndKeys:@"Play Signal", QCPortAttributeNameKey, nil];
+    else if ([key isEqualToString:@"inputPlayFromBeginningSignal"])
+        return [NSDictionary dictionaryWithObjectsAndKeys:@"Play From The Beginning Signal", QCPortAttributeNameKey, nil];
     else if ([key isEqualToString:@"inputPauseSignal"])
         return [NSDictionary dictionaryWithObjectsAndKeys:@"Pause Signal", QCPortAttributeNameKey, nil];
     else if ([key isEqualToString:@"inputStopSignal"])
@@ -178,7 +180,7 @@ struct AQPlayerState aqData;
 
 - (BOOL)execute:(id <QCPlugInContext>)context atTime:(NSTimeInterval)time withArguments:(NSDictionary*)arguments {
     // quick bail
-    if (!([self didValueForInputKeyChange:@"inputFileLocation"] || [self didValueForInputKeyChange:@"inputPlaySignal"] || [self didValueForInputKeyChange:@"inputPauseSignal"] || [self didValueForInputKeyChange:@"inputStopSignal"] || [self didValueForInputKeyChange:@"inputGain"]) || [self.inputFileLocation isEqualToString:@""])
+    if (!([self didValueForInputKeyChange:@"inputFileLocation"] || [self didValueForInputKeyChange:@"inputPlaySignal"] || [self didValueForInputKeyChange:@"inputPlayFromBeginningSignal"] || [self didValueForInputKeyChange:@"inputPauseSignal"] || [self didValueForInputKeyChange:@"inputStopSignal"] || [self didValueForInputKeyChange:@"inputGain"]) || [self.inputFileLocation isEqualToString:@""])
         return YES;
 
     if ([self didValueForInputKeyChange:@"inputFileLocation"]) {
@@ -211,6 +213,14 @@ struct AQPlayerState aqData;
         // setup when necessary
         if (!_aqData.mQueue)
             [self _setupQueue];
+        [self _startQueue];
+    }
+    if ([self didValueForInputKeyChange:@"inputPlayFromBeginningSignal"] && self.inputPlayFromBeginningSignal) {
+        // setup when necessary
+        if (!_aqData.mQueue)
+            [self _setupQueue];
+        else
+            [self _resetQueueToPacket:0];                
         [self _startQueue];
     }
     if ([self didValueForInputKeyChange:@"inputPauseSignal"] && self.inputPauseSignal) {
