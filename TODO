@@ -10,5 +10,6 @@ LATER
     see http://en.wikipedia.org/wiki/MOS_Technology_SID
     see http://my.safaribooksonline.com/book/audio/9780321636973/understanding-core-audio/part01#X2ludGVybmFsX0ZsYXNoUmVhZGVyP3htbGlkPTk3ODAzMjE2MzY5NzMvMw==
 [ ] audio file subpatch to output struct of time, ID3?
+[ ] add time input and output?
 [/] consider changing patch to kQCPlugInExecutionModeProcessor to output current time
     doesn't make sense
