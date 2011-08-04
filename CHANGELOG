@@ -1,4 +1,8 @@
 
+v0.1.2 (3 Aug 2011)
+* add play from beginning signal input
+* bundle example composition and categorize patch for lion
+
 v0.1.1 (13 July 2011)
 * expose pause and stop signal inputs
 * expose gain input
