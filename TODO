@@ -2,6 +2,8 @@ NOW
 [X] AudioQueue playback for core formats
 [X] get audio playback off the main thread!
 [X] expose gain input
+[ ] auto-reset playback when it hits the end of the sample
+[ ] pre-cache file input, do not wait for playback to begin
 
 LATER
 [ ] may need some locking around queue access? (use GCD)

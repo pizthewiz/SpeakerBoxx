@@ -70,6 +70,10 @@ static void HandleOutputBuffer(void* aqData, AudioQueueRef inAQ, AudioQueueBuffe
 
 #pragma mark - PLUGIN
 
+// WORKAROUND - radar://problem/9927446 Lion added QCPlugInAttribute key constants not weak linked
+#pragma weak QCPlugInAttributeCategoriesKey
+#pragma weak QCPlugInAttributeExamplesKey
+
 static NSString* const SBExampleCompositionName = @"Audio Player";
 
 static double SBGainDefault = 1.0;
@@ -220,7 +224,7 @@ struct AQPlayerState aqData;
         if (!_aqData.mQueue)
             [self _setupQueue];
         else
-            [self _resetQueueToPacket:0];                
+            [self _resetQueueToPacket:0];
         [self _startQueue];
     }
     if ([self didValueForInputKeyChange:@"inputPauseSignal"] && self.inputPauseSignal) {
