@@ -3,11 +3,12 @@
 //  SpeakerBoxx
 //
 //  Created by Jean-Pierre Mouilleseaux on 22 Jun 2011.
-//  Copyright 2011 Chorded Constructions. All rights reserved.
+//  Copyright 2011-2012 Chorded Constructions. All rights reserved.
 //
 
 #import "SpeakerBoxxPlugIn.h"
 #import "SpeakerBoxx.h"
+#import "NSURL+CCExtensions.h"
 
 #pragma mark AUDIOQUEUE
 
@@ -190,16 +191,8 @@ struct AQPlayerState aqData;
     if ([self didValueForInputKeyChange:@"inputFileLocation"]) {
         [self _cleanupQueue];
 
-        NSURL* url = [NSURL URLWithString:self.inputFileLocation];
-        if (![url isFileURL]) {
-            NSString* path = [self.inputFileLocation stringByStandardizingPath];
-            if ([path isAbsolutePath]) {
-                url = [NSURL fileURLWithPath:path isDirectory:NO];
-            } else {
-                NSURL* baseDirectoryURL = [[context compositionURL] URLByDeletingLastPathComponent];
-                url = [baseDirectoryURL URLByAppendingPathComponent:path];
-            }
-        }
+        NSString* baseDirectory = [[[context compositionURL] URLByDeletingLastPathComponent] path];
+        NSURL* url = [[[NSURL alloc] initFileURLWithPossiblyRelativeString:self.inputFileLocation relativeTo:baseDirectory isDirectory:NO] autorelease];
 
         self.fileURL = url;
 

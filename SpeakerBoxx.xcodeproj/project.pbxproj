@@ -14,6 +14,7 @@
 		D866374213B2B87B0062869D /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D866372A13B2A5240062869D /* AppKit.framework */; };
 		D866375313B30A860062869D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D866375113B30A860062869D /* AudioToolbox.framework */; };
 		D866375713B31A990062869D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D866375513B31A980062869D /* Localizable.strings */; };
+		D8867D9614FC32B60091D983 /* NSURL+CCExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = D8867D9514FC32B60091D983 /* NSURL+CCExtensions.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +36,8 @@
 		D866375113B30A860062869D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		D866375613B31A990062869D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D866376713B42EC10062869D /* Audio Player.qtz */ = {isa = PBXFileReference; lastKnownFileType = "video.quartz-composer"; path = "Audio Player.qtz"; sourceTree = SOURCE_ROOT; };
+		D8867D9414FC32B60091D983 /* NSURL+CCExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+CCExtensions.h"; sourceTree = "<group>"; };
+		D8867D9514FC32B60091D983 /* NSURL+CCExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+CCExtensions.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +94,8 @@
 		D866372F13B2A5240062869D /* SpeakerBoxx */ = {
 			isa = PBXGroup;
 			children = (
+				D8867D9414FC32B60091D983 /* NSURL+CCExtensions.h */,
+				D8867D9514FC32B60091D983 /* NSURL+CCExtensions.m */,
 				D866374C13B2CA0E0062869D /* SpeakerBoxx.h */,
 				D866373513B2A5240062869D /* SpeakerBoxxPlugin.h */,
 				D866373613B2A5240062869D /* SpeakerBoxxPlugin.m */,
@@ -212,6 +217,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D866373713B2A5240062869D /* SpeakerBoxxPlugin.m in Sources */,
+				D8867D9614FC32B60091D983 /* NSURL+CCExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
