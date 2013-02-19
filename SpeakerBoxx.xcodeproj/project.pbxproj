@@ -28,16 +28,16 @@
 		D866373513B2A5240062869D /* SpeakerBoxxPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpeakerBoxxPlugin.h; sourceTree = "<group>"; };
 		D866373613B2A5240062869D /* SpeakerBoxxPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SpeakerBoxxPlugin.m; sourceTree = "<group>"; };
 		D866374113B2B7500062869D /* SpeakerBoxx-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SpeakerBoxx-Prefix.pch"; sourceTree = "<group>"; };
-		D866374413B2BAAF0062869D /* Rakefile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Rakefile; sourceTree = SOURCE_ROOT; };
-		D866374513B2C09B0062869D /* CHANGELOG */ = {isa = PBXFileReference; lastKnownFileType = text; path = CHANGELOG; sourceTree = SOURCE_ROOT; };
-		D866374613B2C09B0062869D /* README.markdown */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.markdown; sourceTree = SOURCE_ROOT; };
-		D866374713B2C09B0062869D /* TODO */ = {isa = PBXFileReference; lastKnownFileType = text; path = TODO; sourceTree = SOURCE_ROOT; };
+		D866374513B2C09B0062869D /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = CHANGELOG.md; sourceTree = SOURCE_ROOT; };
+		D866374613B2C09B0062869D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = SOURCE_ROOT; };
+		D866374713B2C09B0062869D /* TODO.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = TODO.md; sourceTree = SOURCE_ROOT; };
 		D866374C13B2CA0E0062869D /* SpeakerBoxx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpeakerBoxx.h; sourceTree = "<group>"; };
 		D866375113B30A860062869D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		D866375613B31A990062869D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D866376713B42EC10062869D /* Audio Player.qtz */ = {isa = PBXFileReference; lastKnownFileType = "video.quartz-composer"; path = "Audio Player.qtz"; sourceTree = SOURCE_ROOT; };
 		D8867D9414FC32B60091D983 /* NSURL+CCExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+CCExtensions.h"; sourceTree = "<group>"; };
 		D8867D9514FC32B60091D983 /* NSURL+CCExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+CCExtensions.m"; sourceTree = "<group>"; };
+		D8A295A216D40AE500A29E87 /* Jakefile.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Jakefile.js; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,10 +100,10 @@
 				D866373513B2A5240062869D /* SpeakerBoxxPlugin.h */,
 				D866373613B2A5240062869D /* SpeakerBoxxPlugin.m */,
 				D866373013B2A5240062869D /* Supporting Files */,
-				D866374613B2C09B0062869D /* README.markdown */,
-				D866374413B2BAAF0062869D /* Rakefile */,
-				D866374713B2C09B0062869D /* TODO */,
-				D866374513B2C09B0062869D /* CHANGELOG */,
+				D866374613B2C09B0062869D /* README.md */,
+				D866374713B2C09B0062869D /* TODO.md */,
+				D866374513B2C09B0062869D /* CHANGELOG.md */,
+				D8A295A216D40AE500A29E87 /* Jakefile.js */,
 				D866376713B42EC10062869D /* Audio Player.qtz */,
 			);
 			path = SpeakerBoxx;
@@ -130,7 +130,7 @@
 				D866371D13B2A5240062869D /* Sources */,
 				D866371E13B2A5240062869D /* Frameworks */,
 				D866371F13B2A5240062869D /* Resources */,
-				D866374313B2B9590062869D /* Update Info.plist With git Info */,
+				D866374313B2B9590062869D /* Update Bundle Version */,
 				D866372013B2A5240062869D /* Copy Plug-In Into Place */,
 			);
 			buildRules = (
@@ -148,7 +148,7 @@
 		D866371813B2A5240062869D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0460;
 			};
 			buildConfigurationList = D866371B13B2A5240062869D /* Build configuration list for PBXProject "SpeakerBoxx" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -195,19 +195,19 @@
 			shellPath = /bin/sh;
 			shellScript = "# This shell script simply copies the built plug-in to \"~/Library/Graphics/Quartz Composer Plug-Ins\" and overrides any previous version at that location\n\nmkdir -p \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins\"\nrm -rf \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins/SpeakerBoxx.plugin\"\nditto \"$BUILT_PRODUCTS_DIR/SpeakerBoxx.plugin\" \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins/SpeakerBoxx.plugin\"\n";
 		};
-		D866374313B2B9590062869D /* Update Info.plist With git Info */ = {
+		D866374313B2B9590062869D /* Update Bundle Version */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Update Info.plist With git Info";
+			name = "Update Bundle Version";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/macrake update_bundle_version\n";
+			shellScript = "if [ -f /usr/local/bin/jake ]; then\n    PATH=$PATH:/usr/local/bin jake update\nelse\n    echo \"WARNING - could not find jake, bundle versions left unset\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -248,6 +248,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -263,6 +267,7 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
@@ -277,6 +282,10 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -286,6 +295,7 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				RUN_CLANG_STATIC_ANALYZER = YES;
@@ -297,6 +307,7 @@
 		D866373B13B2A5240062869D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SpeakerBoxx/SpeakerBoxx-Prefix.pch";
 				INFOPLIST_FILE = "SpeakerBoxx/SpeakerBoxx-Info.plist";
@@ -309,6 +320,7 @@
 		D866373C13B2A5240062869D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SpeakerBoxx/SpeakerBoxx-Prefix.pch";
 				INFOPLIST_FILE = "SpeakerBoxx/SpeakerBoxx-Info.plist";
