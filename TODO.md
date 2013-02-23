@@ -3,7 +3,6 @@
 - [ ] auto-reset playback when it hits the end of the sample
 - [ ] add time input
 - [ ] add some sort of time output?
-- [ ] migrate to ARC
 
 ### LATER
 - [ ] may need some locking around queue access? (use GCD)

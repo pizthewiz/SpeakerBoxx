@@ -37,7 +37,7 @@ struct AQPlayerState {
     BOOL _playSignal;
     double _gain;
 }
-@property (nonatomic, assign) NSString* inputFileLocation;
+@property (nonatomic, weak) NSString* inputFileLocation;
 @property (nonatomic) BOOL inputPlaySignal;
 @property (nonatomic) BOOL inputPlayFromBeginningSignal;
 @property (nonatomic) BOOL inputPauseSignal;

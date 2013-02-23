@@ -3,7 +3,7 @@
 //  SpeakerBoxx
 //
 //  Created by Jean-Pierre Mouilleseaux on 22 Jun 2011.
-//  Copyright 2011-2012 Chorded Constructions. All rights reserved.
+//  Copyright 2011-2013 Chorded Constructions. All rights reserved.
 //
 
 #import "SpeakerBoxxPlugIn.h"
@@ -13,7 +13,7 @@
 #pragma mark AUDIOQUEUE
 
 static void DeriveBufferSize(AudioStreamBasicDescription ASBDesc, UInt32 maxPacketSize, Float64 seconds, UInt32* outBufferSize, UInt32* outNumPacketsToRead) {
-    CCDebugLog(@"DeriveBufferSize()");
+//    CCDebugLog(@"DeriveBufferSize()");
 
     static const int maxBufferSize = 0x50000;
     static const int minBufferSize = 0x4000;
@@ -35,9 +35,8 @@ static void DeriveBufferSize(AudioStreamBasicDescription ASBDesc, UInt32 maxPack
     *outNumPacketsToRead = *outBufferSize / maxPacketSize;
 }
 
-
 static void HandleOutputBuffer(void* aqData, AudioQueueRef inAQ, AudioQueueBufferRef inBuffer) {
-    CCDebugLog(@"HandleOutputBuffer()");
+//    CCDebugLog(@"HandleOutputBuffer()");
 
     struct AQPlayerState* pAqData = aqData;
     if (pAqData->mPlaybackState == SBPlaybackStateStopped && !pAqData->mShouldPrimeBuffers) {
@@ -71,10 +70,6 @@ static void HandleOutputBuffer(void* aqData, AudioQueueRef inAQ, AudioQueueBuffe
 
 #pragma mark - PLUGIN
 
-// WORKAROUND - radar://problem/9927446 Lion added QCPlugInAttribute key constants not weak linked
-#pragma weak QCPlugInAttributeCategoriesKey
-#pragma weak QCPlugInAttributeExamplesKey
-
 static NSString* const SBExampleCompositionName = @"Audio Player";
 
 static double SBGainDefault = 1.0;
@@ -82,59 +77,41 @@ static double SBGainDefault = 1.0;
 struct AQPlayerState aqData;
 
 @interface SpeakerBoxxPlugIn()
-@property (nonatomic, retain) NSURL* fileURL;
-- (void)_setupQueue;
-- (void)_startQueue;
-- (void)_stopQueue;
-- (void)_pauseQueue;
-- (void)_resetQueueToPacket:(NSUInteger)packet;
-- (void)_cleanupQueue;
-- (void)_setQueueGain;
+@property (nonatomic, strong) NSURL* fileURL;
 @end
 
 @implementation SpeakerBoxxPlugIn
 
 @dynamic inputFileLocation, inputPlaySignal, inputPlayFromBeginningSignal, inputPauseSignal, inputStopSignal, inputGain;
-@synthesize fileURL = _fileURL;
 
 + (NSDictionary*)attributes {
-    NSMutableDictionary* attributes = [NSMutableDictionary dictionaryWithObjectsAndKeys: 
-        CCLocalizedString(@"kQCPlugIn_Name", NULL), QCPlugInAttributeNameKey, 
-        CCLocalizedString(@"kQCPlugIn_Description", NULL), QCPlugInAttributeDescriptionKey, 
-        nil];
-
-#if defined(MAC_OS_X_VERSION_10_7) && (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_7)
-    if (&QCPlugInAttributeCategoriesKey != NULL) {
-        // array with category strings
-        NSArray* categories = [NSArray arrayWithObjects:@"Render", @"Destination", nil];
-        [attributes setObject:categories forKey:QCPlugInAttributeCategoriesKey];
-    }
-    if (&QCPlugInAttributeExamplesKey != NULL) {
-        // array of file paths or urls relative to plugin resources
-        NSArray* examples = [NSArray arrayWithObjects:[[NSBundle bundleForClass:[self class]] URLForResource:SBExampleCompositionName withExtension:@"qtz"], nil];
-        [attributes setObject:examples forKey:QCPlugInAttributeExamplesKey];
-    }
-#endif
-
-    return (NSDictionary*)attributes;
+    return @{
+        QCPlugInAttributeNameKey: CCLocalizedString(@"kQCPlugIn_Name", NULL),
+        QCPlugInAttributeDescriptionKey: CCLocalizedString(@"kQCPlugIn_Description", NULL),
+        QCPlugInAttributeCategoriesKey: @[@"Render", @"Destination"],
+        QCPlugInAttributeExamplesKey: @[[[NSBundle bundleForClass:[self class]] URLForResource:SBExampleCompositionName withExtension:@"qtz"]]
+    };
 }
 
 + (NSDictionary*)attributesForPropertyPortWithKey:(NSString*)key {
-    if ([key isEqualToString:@"inputFileLocation"])
-        return [NSDictionary dictionaryWithObjectsAndKeys:@"File Location", QCPortAttributeNameKey, nil];
-    else if ([key isEqualToString:@"inputPlaySignal"])
-        return [NSDictionary dictionaryWithObjectsAndKeys:@"Play Signal", QCPortAttributeNameKey, nil];
-    else if ([key isEqualToString:@"inputPlayFromBeginningSignal"])
-        return [NSDictionary dictionaryWithObjectsAndKeys:@"Play From The Beginning Signal", QCPortAttributeNameKey, nil];
-    else if ([key isEqualToString:@"inputPauseSignal"])
-        return [NSDictionary dictionaryWithObjectsAndKeys:@"Pause Signal", QCPortAttributeNameKey, nil];
-    else if ([key isEqualToString:@"inputStopSignal"])
-        return [NSDictionary dictionaryWithObjectsAndKeys:@"Stop Signal", QCPortAttributeNameKey, nil];
-    else if ([key isEqualToString:@"inputGain"])
-        return [NSDictionary dictionaryWithObjectsAndKeys:@"Gain", QCPortAttributeNameKey, 
-            [NSNumber numberWithDouble:0], QCPortAttributeMinimumValueKey, 
-            [NSNumber numberWithDouble:1.0], QCPortAttributeMaximumValueKey, 
-            [NSNumber numberWithDouble:SBGainDefault], QCPortAttributeDefaultValueKey, nil];
+    if ([key isEqualToString:@"inputFileLocation"]) {
+        return @{QCPortAttributeNameKey: @"File Location"};
+    } else if ([key isEqualToString:@"inputPlaySignal"]) {
+        return @{QCPortAttributeNameKey: @"Play Signal"};
+    } else if ([key isEqualToString:@"inputPlayFromBeginningSignal"]) {
+        return @{QCPortAttributeNameKey: @"Play From The Beginning Signal"};
+    } else if ([key isEqualToString:@"inputPauseSignal"]) {
+        return @{QCPortAttributeNameKey: @"Pause Signal"};
+    } else if ([key isEqualToString:@"inputStopSignal"]) {
+        return @{QCPortAttributeNameKey: @"Stop Signal"};
+    } else if ([key isEqualToString:@"inputGain"]) {
+        return @{
+            QCPortAttributeNameKey: @"Gain",
+            QCPortAttributeMinimumValueKey: @0.0,
+            QCPortAttributeMaximumValueKey: @1.0,
+            QCPortAttributeDefaultValueKey: @(SBGainDefault)
+         };
+    }
 	return nil;
 }
 
@@ -158,9 +135,6 @@ struct AQPlayerState aqData;
 
 - (void)dealloc {
     [self _cleanupQueue];
-    [_fileURL release];
-
-	[super dealloc];
 }
 
 #pragma mark - EXECUTION
@@ -179,20 +153,22 @@ struct AQPlayerState aqData;
 	Called by Quartz Composer when the plug-in instance starts being used by Quartz Composer.
 	*/
 
-    if (_playSignal && _aqData.mQueue)
+    if (_playSignal && _aqData.mQueue) {
         [self _startQueue];
+    }
 }
 
 - (BOOL)execute:(id <QCPlugInContext>)context atTime:(NSTimeInterval)time withArguments:(NSDictionary*)arguments {
     // quick bail
-    if (!([self didValueForInputKeyChange:@"inputFileLocation"] || [self didValueForInputKeyChange:@"inputPlaySignal"] || [self didValueForInputKeyChange:@"inputPlayFromBeginningSignal"] || [self didValueForInputKeyChange:@"inputPauseSignal"] || [self didValueForInputKeyChange:@"inputStopSignal"] || [self didValueForInputKeyChange:@"inputGain"]) || [self.inputFileLocation isEqualToString:@""])
+    if (!([self didValueForInputKeyChange:@"inputFileLocation"] || [self didValueForInputKeyChange:@"inputPlaySignal"] || [self didValueForInputKeyChange:@"inputPlayFromBeginningSignal"] || [self didValueForInputKeyChange:@"inputPauseSignal"] || [self didValueForInputKeyChange:@"inputStopSignal"] || [self didValueForInputKeyChange:@"inputGain"]) || [self.inputFileLocation isEqualToString:@""]) {
         return YES;
+    }
 
     if ([self didValueForInputKeyChange:@"inputFileLocation"]) {
         [self _cleanupQueue];
 
         NSString* baseDirectory = [[[context compositionURL] URLByDeletingLastPathComponent] path];
-        NSURL* url = [[[NSURL alloc] initFileURLWithPossiblyRelativeString:self.inputFileLocation relativeTo:baseDirectory isDirectory:NO] autorelease];
+        NSURL* url = [[NSURL alloc] initFileURLWithPossiblyRelativeString:self.inputFileLocation relativeTo:baseDirectory isDirectory:NO];
 
         self.fileURL = url;
 
@@ -203,21 +179,24 @@ struct AQPlayerState aqData;
 
         [self _setupQueue];
 
-        if (self.inputPlaySignal)
+        if (self.inputPlaySignal) {
             [self _startQueue];
+        }
     }
     if ([self didValueForInputKeyChange:@"inputPlaySignal"] && self.inputPlaySignal) {
         // setup when necessary
-        if (!_aqData.mQueue)
+        if (!_aqData.mQueue) {
             [self _setupQueue];
+        }
         [self _startQueue];
     }
     if ([self didValueForInputKeyChange:@"inputPlayFromBeginningSignal"] && self.inputPlayFromBeginningSignal) {
         // setup when necessary
-        if (!_aqData.mQueue)
+        if (!_aqData.mQueue) {
             [self _setupQueue];
-        else
+        } else {
             [self _resetQueueToPacket:0];
+        }
         [self _startQueue];
     }
     if ([self didValueForInputKeyChange:@"inputPauseSignal"] && self.inputPauseSignal) {
@@ -232,7 +211,7 @@ struct AQPlayerState aqData;
         [self _setQueueGain];
     }
 
-    CCDebugLogSelector();
+//    CCDebugLogSelector();
 
 	return YES;
 }
@@ -242,10 +221,11 @@ struct AQPlayerState aqData;
 	Called by Quartz Composer when the plug-in instance stops being used by Quartz Composer.
 	*/
 
-    CCDebugLogSelector();
+//    CCDebugLogSelector();
 
-    if (_aqData.mPlaybackState != SBPlaybackStateStopped)
+    if (_aqData.mPlaybackState != SBPlaybackStateStopped) {
         [self _cleanupQueue];
+    }
 }
 
 - (void)stopExecution:(id <QCPlugInContext>)context {
@@ -257,12 +237,12 @@ struct AQPlayerState aqData;
 #pragma mark -
 
 - (void)_setupQueue {
-    CCDebugLogSelector();
+//    CCDebugLogSelector();
 
     [self _cleanupQueue];
 
     // open file
-    OSStatus status = AudioFileOpenURL((CFURLRef)self.fileURL, fsRdPerm, 0, &_aqData.mAudioFile);
+    OSStatus status = AudioFileOpenURL((__bridge CFURLRef)self.fileURL, fsRdPerm, 0, &_aqData.mAudioFile);
     if (status != noErr) {
         CCErrorLog(@"ERROR - failed to open audio file %@ with error %d", self.fileURL, (int)status);
         return;
@@ -324,7 +304,7 @@ struct AQPlayerState aqData;
 }
 
 - (void)_startQueue {
-    CCDebugLogSelector();
+//    CCDebugLogSelector();
 
     if (!_aqData.mQueue) {
         CCErrorLog(@"ERROR - failed to start queue, queue not setup!");
@@ -344,7 +324,7 @@ struct AQPlayerState aqData;
 }
 
 - (void)_pauseQueue {
-    CCDebugLogSelector();
+//    CCDebugLogSelector();
 
     if (_aqData.mPlaybackState != SBPlaybackStatePlaying) {
         CCWarningLog(@"WARNING - queue not running, pause is unnecessary");
@@ -359,7 +339,7 @@ struct AQPlayerState aqData;
 }
 
 - (void)_stopQueue {
-    CCDebugLogSelector();
+//    CCDebugLogSelector();
 
     if (_aqData.mPlaybackState != SBPlaybackStatePlaying) {
         CCWarningLog(@"WARNING - queue not running, stop is unnecessary");
@@ -375,7 +355,7 @@ struct AQPlayerState aqData;
 }
 
 - (void)_resetQueueToPacket:(NSUInteger)packet {
-    CCDebugLogSelector();
+//    CCDebugLogSelector();
 
     if (!_aqData.mQueue) {
         CCErrorLog(@"ERROR - failed to reset queue, queue not setup!");
@@ -395,7 +375,7 @@ struct AQPlayerState aqData;
 }
 
 - (void)_cleanupQueue {
-    CCDebugLogSelector();
+//    CCDebugLogSelector();
 
     if (_aqData.mPlaybackState != SBPlaybackStateStopped) {
         [self _stopQueue];
@@ -410,7 +390,7 @@ struct AQPlayerState aqData;
 }
 
 - (void)_setQueueGain {
-    CCDebugLogSelector();
+//    CCDebugLogSelector();
 
     if (!_aqData.mQueue) {
         CCWarningLog(@"WARNING - failed to set queue gain, queue not setup!");
